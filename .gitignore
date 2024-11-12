@@ -1,3 +1,17 @@
+report/output/*.log
+report/output/*.aux
+report/output/*.lof
+report/output/*.lot
+report/output/*.lol
+report/output/*.toc
+report/output/*.out
+report/output/*.ilg
+report/output/*.nls
+report/output/*.nlo
+report/output/*.fdb_latexmk
+report/output/*.fls
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
