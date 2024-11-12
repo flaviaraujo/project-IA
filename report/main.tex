@@ -1,0 +1,154 @@
+%===============================================================================
+% DOCUMENT
+%===============================================================================
+
+%% Document class
+\documentclass[a4paper,12pt]{scrreprt}
+
+%% Include packages
+\usepackage{packages}
+
+\begin{document}
+
+%% Include custom commands
+\include{commands}
+
+\pagenumbering{gobble}
+
+%% Build cover
+\include{cover}
+\makecover
+
+%% Default geometry
+\newgeometry{top=3cm,left=3cm,right=3cm,bottom=4cm}
+
+%% Save default geometry
+\savegeometry{default}
+
+%% Load default geometry with:
+% \loadgeometry{default}
+
+
+%===============================================================================
+% BEGIN ABSTRACT PAGE
+%===============================================================================
+
+\renewenvironment{abstract}
+ {\par\noindent\textbf{\Large\abstractname}\par\bigskip}
+ {}
+
+\begin{flushleft}
+\begin{abstract}
+    <<O resumo tem como objectivo descrever de forma sucinta o trabalho realizado. Deverá conter uma pequena introdução, seguida por uma breve descrição do trabalho realizado e terminando com uma indicação sumária do seu estado final.>>
+    \par \textbf{Área de Aplicação}: <<Identificação da Área de trabalho.>>
+    \par \textbf{Palavras-Chave}: <<Conjunto de palavras-chave que permitirão referenciar domínios de conhecimento, tecnologias, estratégias, etc., directa ou indirectamente referidos no relatório.>>
+\end{abstract}
+\end{flushleft}
+
+\pagebreak
+
+%===============================================================================
+% END ABSTRACT PAGE
+%===============================================================================
+
+
+%===============================================================================
+% BEGIN INDEXES PAGES
+%===============================================================================
+
+%% Changes table of content name
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\listfigurename}{Índice de Figuras}
+\renewcommand{\listtablename}{Índice de Tabelas}
+\renewcommand{\lstlistlistingname}{Índice de \textit{Snippets}}
+
+\tableofcontents
+\pagebreak
+
+\listoffigures
+\pagebreak
+
+\listoftables
+\pagebreak
+
+\lstlistoflistings
+\pagebreak
+
+
+%===============================================================================
+% END INDEXES PAGES
+%===============================================================================
+
+\pagenumbering{arabic}
+
+%===============================================================================
+% BEGIN DESCRIÇÃO DO PROBLEMA
+%===============================================================================
+
+\chapter{Descrição do Problema}
+
+%===============================================================================
+% END DESCRIÇÃO DO PROBLEMA
+%===============================================================================
+
+%===============================================================================
+% BEGIN FORMULAÇÃO DO PROBLEMA
+%===============================================================================
+
+\chapter{Formulação do Problema}
+
+%===============================================================================
+% END FORMULAÇÃO DO PROBLEMA
+%===============================================================================
+
+%===============================================================================
+% BEGIN TAREFAS REALIZADAS E DECISÕES TOMADAS
+%===============================================================================
+
+\chapter{Tarefas Realizadas e Decisões Tomadas}
+
+%===============================================================================
+% END TAREFAS REALIZADAS E DECISÕES TOMADAS
+%===============================================================================
+
+%===============================================================================
+% BEGIN CONCLUSÕES E DISCUSSÃO DOS RESULTADOS OBTIDOS
+%===============================================================================
+
+\chapter{Conclusões e Discussão dos Resultados Obtidos}
+
+%===============================================================================
+% END CONCLUSÕES E DISCUSSÃO DOS RESULTADOS OBTIDOS
+%===============================================================================
+
+
+
+%===============================================================================
+% BEGIN REFERÊNCIAS
+%===============================================================================
+
+%% Change bibliography name from “Bibliografia” to “Referências”
+\renewcommand\bibname{Referências}
+
+\begin{thebibliography}{9}
+
+\bibitem{RussellNorvig}
+Russell, S., \& Norvig, P. (2009). \textit{Artificial Intelligence - A Modern Approach} (3rd ed.). Pearson Education. ISBN-13: 9780136042594.
+
+\bibitem{CostaSimoes}
+Costa, E., \& Simões, A. (2008). \textit{Inteligência Artificial - Fundamentos e Aplicações}. FCA. ISBN: 978-972-722-34.
+
+\end{thebibliography}
+
+%% Add bibliografia to index
+\addcontentsline{toc}{chapter}{Referências}
+
+%===============================================================================
+% END REFERÊNCIAS
+%===============================================================================
+
+
+
+
+
+\end{document}
