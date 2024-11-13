@@ -1,9 +1,9 @@
 # project-IA
 
 ## TODO
-[] Descricao do problema - o que retiramos do enunciado
-[] Formulacao do problema - estado inicial, teste objetivo, operadores (ações disponíveis) e o custo da solução
-[] Representacao em grafo (zonas de entrega e caminhos possiveis)
+[] Descricao do problema - o que retiramos do enunciado \\
+[] Formulacao do problema - estado inicial, teste objetivo, operadores (ações disponíveis) e o custo da solução \\
+[] Representacao em grafo (zonas de entrega e caminhos possiveis) \\
 [] Implementar DFS e BFS 
 [] Implementar A* e Greedy
 [] Implementar a nossa heurisitica
