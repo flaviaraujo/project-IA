@@ -1,14 +1,21 @@
 # project-IA
 
 ## TODO
-[] Descricao do problema - o que retiramos do enunciado \\
-[] Formulacao do problema - estado inicial, teste objetivo, operadores (ações disponíveis) e o custo da solução \\
-[] Representacao em grafo (zonas de entrega e caminhos possiveis) \\
-[] Implementar DFS e BFS 
+[] Descricao do problema - o que retiramos do enunciado
+
+[] Formulacao do problema - estado inicial, teste objetivo, operadores (ações disponíveis) e o custo da solução
+
+[] Representacao em grafo (zonas de entrega e caminhos possiveis)
+
+[] Implementar DFS e BFS
+
 [] Implementar A* e Greedy
+
 [] Implementar a nossa heurisitica
+
 [] Os algoritmos implementados serem testados com as condicoes da NOTA
-[] Simular condições  dinâmicas, como mudanças meteorológicas, que podem  afetar a velocidade 
+
+[] Simular condições  dinâmicas, como mudanças meteorológicas, que podem  afetar a velocidade
 dos veículos e bloquear acessos a determinadas zonas.
 
 
