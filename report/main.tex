@@ -87,6 +87,7 @@
 
 \chapter{Descrição do Problema}
 
+
 %===============================================================================
 % END DESCRIÇÃO DO PROBLEMA
 %===============================================================================
@@ -96,6 +97,20 @@
 %===============================================================================
 
 \chapter{Formulação do Problema}
+
+\begin{itemize}
+    \item\textbf{Tipo:} Problema de Procura de Estado Único (?)
+    \item\textbf{Estado Inicial:} Todos os centros de distribuição, veículos e suprimentos disponíveis são conhecidos.
+     As localizações e necessidades das zonas afetadas são identificadas, com diferentes graus de urgência.
+    \item\textbf{Teste Objetivo:} 
+        \item\textbf{Operadores (Ações Disponíveis):} 
+        \begin{itemize}
+                \item\textit{Mover Veículo:} Deslocar um veículo de uma zona para outra, respeitando as limitações de combustível e condições da rota.
+                \item\textit{Carregar/Descarregar Suprimentos:} Realizar operações de carga e descarga nos veículos, levando em consideração as capacidades.
+                \item\textit{Reabastecer Combustível:} Realizar paragens no percurso para reabastecimento dos veículos. (?)
+        \end{itemize}
+    \item\textbf{Custo da Solução:} O custo é calculado com base na distância percorrida, tempo de viagem, uso de combustível e deterioração dos suprimentos perecíveis.
+    \end{itemize}
 
 %===============================================================================
 % END FORMULAÇÃO DO PROBLEMA
