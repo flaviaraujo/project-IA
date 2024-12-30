@@ -29,6 +29,13 @@ class Supply:
     def __hash__(self):
         return hash((self.kind, self.amount, self.perishable_time))
 
+    def serialize(self):
+        return {
+            "kind": self.kind,
+            "amount": self.amount,
+            "perishable_time": self.perishable_time
+        }
+
     def divide(self, amount: int) -> ('Supply', 'Supply'):
         if amount > self.amount:
             raise ValueError("Cannot divide a supply into more than it has")
@@ -38,6 +45,9 @@ class Supply:
 
         self.amount -= amount
         return Supply(self.kind, amount, self.perishable_time), self
+
+    def load(self, supply: 'Supply') -> None:
+        self.amount += supply.amount
 
     def supply(self, amount: int) -> int:
         if amount > self.amount:
