@@ -24,3 +24,54 @@ tempestades).
 - Limitação de recursos (e.g. peso e volume de carga) e combustível, forçando uma gestão eficiente
 de reabastecimentos e escolhas de rotas.
 - Cada zona tem uma janela de tempo crítica, após a qual o acesso pode se tornar impossível.
+
+## Heurísticas
+
+1. Distâncias para cada catástrofe por tipo de veículo e nível de acesso
+
+```
+A : {
+    "car": {
+        B: 3,
+        F: infinity
+    },
+    "motorcycle": {
+        B: 3,
+        F: 9
+    },
+    ...
+},
+B : {
+    "car": {
+        B: 0,
+        F: infinity
+    },
+    "motorcycle": {
+        B: 0,
+        F: 12
+    },
+    ...
+},
+...
+```
+
+2. Prioridades para cada catástrofe por tipo de veículo, nível de acesso, tempo_chegada_veículo - tempo_resposta_catastrofe e combustível
+
+3. Prioridades para cada catástrofe por tipo de veículo, nível de acesso, tempo_chegada_veículo - tempo_resposta_catastrofe, carga_veiculo/demanda_catastrofe e combustível
+
+## Algoritmo
+
+Prioridades:
+1. Chegar a tempo/Resolver catástrofe a tempo
+2. Maximizar a carga de forma a resolver a catástrofe no menor número de viagens
+3. Minimizar Combustível
+
+---
+
+- Calcular objetivo ótimo para cada veículo
+    - Verificar se é possível chegar a tempo para cada catástrofe (ter em conta a perecibilidade de alimentos)
+    - Para cada uma dessas catástrofes
+        - Considerar a carga de veiculo perante as necessidades da catástrofe
+        - Adicionar o veículo à lista de veículos que podem resolver a catástrofe:
+            (Veículo(Capacidade_carga, Combustível), Catástrofe, Nº de viagens, boolean: resolve a tempo)
+- Da lista de veículos que podem resolver a catástrofe, escolher o veículo que minimiza o combustível.
