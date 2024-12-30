@@ -14,7 +14,7 @@ dos veículos e bloquear acessos a determinadas zonas.
 
 ## Notas
 
-- Diferentes prioridades de emergência
+- Diferentes prioridades de emergência (baseado no tempo de resposta e distância)
 - Condições variáveis (rotas bloqueadas e limitações dos veículos)
 - Limitações geográficas que impedem certos veículos de aceder a determinadas zonas (e.g.,
 terrenos inacessíveis para camiões).
