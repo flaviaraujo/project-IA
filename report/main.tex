@@ -39,9 +39,16 @@
 
 \begin{flushleft}
 \begin{abstract}
-    <<O resumo tem como objectivo descrever de forma sucinta o trabalho realizado. Deverá conter uma pequena introdução, seguida por uma breve descrição do trabalho realizado e terminando com uma indicação sumária do seu estado final.>>
-    \par \textbf{Área de Aplicação}: <<Identificação da Área de trabalho.>>
-    \par \textbf{Palavras-Chave}: <<Conjunto de palavras-chave que permitirão referenciar domínios de conhecimento, tecnologias, estratégias, etc., directa ou indirectamente referidos no relatório.>>
+    As catástrofes naturais apresentam desafios significativos para a logística e distribuição
+    de recursos essenciais em situações de emergência. 
+    Este trabalho propõe uma abordagem baseada em algoritmos de procura para otimizar a distribuição
+    alimentar em cenários de crise, minimizando o tempo de resposta e garantindo a eficiência no uso
+    dos recursos disponíveis. Para isso, foi formulado um problema de procura em estado único, implementado
+    por meio de um grafo que representa as localizações afetadas e suas conexões. A solução combina algoritmos
+    clássicos de inteligência artificial com heurísticas desenvolvidas para considerar fatores como distância,
+    tempo e urgência.
+    \par \textbf{Área de Aplicação}: Inteligência Artificial, Logística, Distribuição de Recursos.
+    \par \textbf{Palavras-Chave}: Algoritmos de Procura, Heurísticas, A*, Gulosa, BFS, DFS, Procura Uniforme.
 \end{abstract}
 \end{flushleft}
 
@@ -60,7 +67,6 @@
 \renewcommand{\contentsname}{Índice}
 \renewcommand{\listfigurename}{Índice de Figuras}
 \renewcommand{\listtablename}{Índice de Tabelas}
-\renewcommand{\lstlistlistingname}{Índice de \textit{Snippets}}
 
 \tableofcontents
 \pagebreak
@@ -69,9 +75,6 @@
 \pagebreak
 
 \listoftables
-\pagebreak
-
-\lstlistoflistings
 \pagebreak
 
 
@@ -87,6 +90,48 @@
 
 \chapter{Descrição do Problema}
 
+Este problema trata-se de um cenário de gestão de recursos em situações de emergência, onde é 
+necessário coordenar a distribuição de suprimentos em zonas afetadas por desastres naturais.
+O objetivo é otimizar a distribuição de recursos, minimizando o tempo de resposta e garantindo a
+satisfação das necessidades das zonas afetadas.
+
+O problema é composto por um conjunto de localizações, algumas das quais são zonas afetadas (e, de entre
+estas, algumas com maior urgência). Para chegar a estas zonas, é necessário utilizar veículos que partem
+de diferentes localizações. Existem diferentes tipos de veículos: mota, carro, camião, \textit{drone}, helicóptero,
+avião, e barco. Cada veículo tem uma capacidade de carga, velocidade, capacidade de combustível e gasto de combustível
+diferente. Como tal, deve ser feita uma gestão eficiente dos mesmos, de forma a que sejam utilizados de maneira
+a otimizar as suas capacidades de transporte.
+
+\begin{table}[ht]
+    \centering
+    \small % Reduce font size
+    \setlength{\tabcolsep}{0.5pt} % Adjust column spacing
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing
+    \fontsize{9}{10}\selectfont
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Veículo} & \textbf{Tipo} & \textbf{Capacidade (kg)} & \textbf{Velocidade (km/h)} & \textbf{Cap. Comb. (L)} & \textbf{Cons. Comb. (L/100km)} \\
+        \hline
+        Mota & Terrestre & 10 & 120 & 15 & 4 \\
+        Carro & Terrestre & 500 & 160 & 50 & 8 \\
+        Camião & Terrestre & 2000 & 100 & 300 & 30 \\
+        \hline
+        Drone & Aéreo & 5 & 100 & 5 & 2 \\
+        Helicóptero & Aéreo & 700 & 250 & 300 & 70 \\
+        Avião & Aéreo & 800 & 250 & 200 & 40 \\
+        \hline
+        Barco & Marítimo & 5000 & 50 & 1000 & 50 \\
+        \hline
+    \end{tabular}
+    \caption{Características dos Veículos}
+    \label{tab:veiculos}
+\end{table}
+
+Os suprimentos a distribuir são de diferentes tipos: alimentos, água e kits de primeiros socorros. Cada zona afetada
+tem necessidades específicas, que devem ser satisfeitas com a distribuição dos suprimentos. A distribuição dos suprimentos
+deve ser feita de forma a minimizar o tempo de resposta, garantindo que as zonas com maior urgência são atendidas primeiro.
+De entre os suprimentos a distribuir, os alimentos são perecíveis, pelo que o seu tempo de entrega deve ser minimizado antes
+que se estraguem.
 
 %===============================================================================
 % END DESCRIÇÃO DO PROBLEMA
@@ -99,18 +144,33 @@
 \chapter{Formulação do Problema}
 
 \begin{itemize}
-    \item\textbf{Tipo:} Problema de Procura de Estado Único (?)
-    \item\textbf{Estado Inicial:} Todos os centros de distribuição, veículos e suprimentos disponíveis são conhecidos.
+    \item\textbf{Tipo:} Problema de Procura de Estado Único
+    \item\textbf{Estado Inicial:} Todos os centros de distribuição, locais de abastecimento,
+    veículos e suprimentos disponíveis são conhecidos.
      As localizações e necessidades das zonas afetadas são identificadas, com diferentes graus de urgência.
-    \item\textbf{Teste Objetivo:} 
+    \item\textbf{Estado Objetivo:} Todas as zonas afetadas são atendidas, com as suas necessidades satisfeitas, e os suprimentos
+    são distribuídos de forma a minimizar o tempo de resposta e o desperdício alimentar.
         \item\textbf{Operadores (Ações Disponíveis):} 
         \begin{itemize}
                 \item\textit{Mover Veículo:} Deslocar um veículo de uma zona para outra, respeitando as limitações de combustível e condições da rota.
                 \item\textit{Carregar/Descarregar Suprimentos:} Realizar operações de carga e descarga nos veículos, levando em consideração as capacidades.
-                \item\textit{Reabastecer Combustível:} Realizar paragens no percurso para reabastecimento dos veículos. (?)
+                \item\textit{Reabastecer Combustível:} Realizar paragens no percurso para reabastecimento dos veículos, tendo em conta o tempo
+                necessário e a capacidade de combustível disponível.
         \end{itemize}
-    \item\textbf{Custo da Solução:} O custo é calculado com base na distância percorrida, tempo de viagem, uso de combustível e deterioração dos suprimentos perecíveis.
+    \item\textbf{Custo da Solução:} \textcolor{red}{O custo é calculado com base na distância percorrida.}
     \end{itemize}
+
+O grafo correspondente ao problema é composto por um conjunto de vértices, que representam as localizações, e um conjunto de arestas,
+que representam as ligações entre as localizações. Cada aresta tem um peso associado, que corresponde à distância entre as localizações
+que liga. Para o desenho dos grafos, foram utilizadas as bibliotecas \texttt{graphviz} e, alternativamente, \texttt{mathplotlib}.
+Por conseguinte, o grafo inicial é o seguinte:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/graph.png}
+    \caption{Grafo Inicial}
+    \label{fig:grafo}
+\end{figure}
 
 %===============================================================================
 % END FORMULAÇÃO DO PROBLEMA
@@ -122,6 +182,44 @@
 
 \chapter{Tarefas Realizadas e Decisões Tomadas}
 
+\section{Implementação do Problema}
+
+Para a implementação do problema, foram criadas as seguintes classes:
+
+\begin{itemize}
+    \item \textit{Vehicle:} Representa um veículo, com as suas características e capacidades.
+    \item \textit{Catastrophe:} Possui as zonas afetadas, com as suas necessidades e graus de urgência.
+    \item \textit{Supply:} Representa os suprimentos a distribuir - alimentos, água e kits de primeiros socorros -,
+    com as suas características e tempos de validade.
+    \item \textit{Simulation Data:} Contém os dados da simulação - locais com suprimentos, locais de abastecimento,
+    veículos disponíveis, e zonas afetadas.
+    \item \textit{Graph:} Contém o grafo com as localizações e ligações entre as mesmas.
+    \item \textit{Mission Planner:} Classe principal, que gere a simulação.
+\end{itemize}
+
+\section{Implementação dos Operadores?}
+
+\section{Algoritmos de Procura Utilizados}
+
+Para a resolução do problema, foram utilizados os seguintes algoritmos de procura:
+
+\begin{itemize}
+    \item \textit{Breadth-First Search (BFS):} Procura em Largura, que expande todos os nós de um nível antes de passar para o próximo.
+    \item \textit{Depth-First Search (DFS):} Procura em Profundidade, que expande um nó até ao limite antes de retroceder.
+    \item \textit{Uniform-Cost Search (UCS):} Procura de Custo Uniforme, que expande o nó com menor custo de caminho.
+    \item \textit{A* Search:} Procura A*, que combina a procura gulosa com a procura de custo uniforme, utilizando uma das heurísticas
+    disponíveis.
+    \item \textit{Greedy:} Procura Gulosa, que expande o nó que parece mais promissor, com base numa das heurísticas disponíveis.
+\end{itemize}
+
+\section{Heurísticas Desenvolvidas}
+
+Foram desenvolvidas as seguintes heurísticas para a procura A* e Greedy:
+\textcolor{red}{Descrever as heurísticas desenvolvidas - uma de distância apenas, uma de tempo e distância,
+e uma de tempo, distância e urgência?}
+
+
+
 %===============================================================================
 % END TAREFAS REALIZADAS E DECISÕES TOMADAS
 %===============================================================================
@@ -131,6 +229,17 @@
 %===============================================================================
 
 \chapter{Conclusões e Discussão dos Resultados Obtidos}
+
+\section{Resultados Obtidos}
+Fazer tabelas ou graficos
+
+\section{Conclusões}
+
+O trabalho demonstrou a eficácia dos algoritmos de procura na resolução de problemas
+de logística em cenários de emergência, com destaque para a capacidade do algoritmo A* 
+de integrar múltiplos critérios de decisão. Os resultados mostram que a escolha apropriada
+de heurísticas pode reduzir significativamente o tempo de resposta, sobretudo em cenários
+com alta urgência.
 
 %===============================================================================
 % END CONCLUSÕES E DISCUSSÃO DOS RESULTADOS OBTIDOS
