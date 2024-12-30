@@ -1,15 +1,8 @@
-report/output/*.log
-report/output/*.aux
-report/output/*.lof
-report/output/*.lot
-report/output/*.lol
-report/output/*.toc
-report/output/*.out
-report/output/*.ilg
-report/output/*.nls
-report/output/*.nlo
-report/output/*.fdb_latexmk
-report/output/*.fls
+# Ignore all LaTeX build files
+report/output/*
 
-# Byte-compiled __pycache__ directories
+# Except for the report PDF
+!report/output/*.pdf
+
+# Ignore __pycache__ directories
 src/**/__pycache__/
