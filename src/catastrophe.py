@@ -1,6 +1,7 @@
 # The class Catastrophe is used to store the information of a catastrophe such as:
 # - time: sensitive time of response
-# - supplies_demand: dictionary with the supplies type and the amount needed
+# - supplies_demand: dictionary with the supplies type and the amount needed (kg)
+
 
 class Catastrophe:
     def __init__(self, time, supplies_demand):
@@ -9,8 +10,10 @@ class Catastrophe:
 
     def __str__(self):
         return (
-            "Time: "            + str(self.time)            + " " +
-            "Supplies demand: " + str(self.supplies_demand)
+            "{\n"
+            f"  time_to_respond: {self.time},\n"
+            f"  supplies_demand: {self.supplies_demand}\n"
+            "}"
         )
 
     def __repr__(self):
@@ -24,6 +27,12 @@ class Catastrophe:
 
     def __hash__(self):
         return hash((self.time, self.supplies_demand))
+
+    def serialize(self):
+        return {
+            "time_to_respond": self.time,
+            "supplies_demand": self.supplies_demand
+        }
 
     def decrease_time(self, time_passed):
         self.time -= time_passed
