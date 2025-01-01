@@ -202,15 +202,8 @@ def change_heuristic_menu(heuristic_option, mission_planner) -> None:
 
 def main(verbose) -> None:
     simulation_option = 1
-    mission_planner   = simulation_data.init_simulation(simulation_option)
-
-    # TODO use a more complex heuristic
-    heuristic_option  = 1
-    heuristic_fn1({
-        "graph":        mission_planner.graph,
-        "catastrophes": mission_planner.catastrophes,
-        "vehicles":     mission_planner.get_vehicles_list()
-    })
+    mission_planner, heuristic_option = \
+        simulation_data.init_simulation(simulation_option)
 
     while True:
         display_main_menu(verbose)

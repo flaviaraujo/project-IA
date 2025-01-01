@@ -4,10 +4,20 @@ from vehicle         import Vehicle
 from supply          import Supply
 from graph.graph     import Graph
 
-from vehicle import LOW_ACCESS_LEVEL, MEDIUM_ACCESS_LEVEL, HIGH_ACCESS_LEVEL
+from vehicle import (
+    LOW_ACCESS_LEVEL,
+    MEDIUM_ACCESS_LEVEL,
+    HIGH_ACCESS_LEVEL
+)
+
+from graph.heurisitics import (
+    heuristic_fn1,
+    heuristic_fn2,
+    heuristic_fn3
+)
 
 
-def init_simulation(option: int) -> MissionPlanner:
+def init_simulation(option: int) -> (MissionPlanner, int):
     match option:
         case 1:
             # TODO add simulation description
@@ -94,8 +104,13 @@ def init_simulation(option: int) -> MissionPlanner:
             graph.add_edge("D", "E", 7, 0.60, "land",  LOW_ACCESS_LEVEL)
             graph.add_edge("E", "F", 8, 0.70, "land",  LOW_ACCESS_LEVEL)
 
-            # Add heuristics values to nodes TODO
-            # graph.update_heuristics(heuristic_fn: function, params: dict)
+            # Add heuristics values to nodes
+            heuristic_option = 1
+            heuristic_fn1({
+                "graph":        graph,
+                "catastrophes": catastrophes,
+                "vehicles":     sum(fleet.values(), [])
+            })
 
             # Create destructible nodes conditions
             destructible_nodes = {
@@ -111,7 +126,7 @@ def init_simulation(option: int) -> MissionPlanner:
             graph.destructible_edges = destructible_edges
 
             # return the MissionPlanner object
-            return MissionPlanner(graph, catastrophes, fleet, supplies)
+            return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
         case 2:
             return None
         case 3:
