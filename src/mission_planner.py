@@ -66,3 +66,11 @@ class MissionPlanner:
             }
             for node, supplies in self.supplies.items()
         }
+
+    ###
+    # Utility methods
+    ###
+
+    # Returns a list with all vehicles in the fleet
+    def get_vehicles_list(self):
+        return sum(self.fleet.values(), [])
