@@ -17,6 +17,8 @@
 from .node import Node
 from vehicle import convert_access_level_to_str
 
+from heapq import heappush, heappop
+
 # Libraries for graphical representation
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -132,6 +134,75 @@ class Graph:
             # TODO pass the necessary parameters to the heuristic function
             self.h[node] = heuristic_fn(node)
 
+    # Calculates the shortest distance from node1 to node2
+    # without considering the vehicle's travel method and access level.
+    # Uses Dijkstra's algorithm with a priority queue.
+    # Returns None if the nodes are not in the graph or if there isn't any path
+    def get_distance(self, node1, node2, vehicle):
+        if isinstance(node1, str):
+            node1 = next((n for n in self.nodes if n.name == node1), None)
+
+        if isinstance(node2, str):
+            node2 = next((n for n in self.nodes if n.name == node2), None)
+
+        if node1 not in self.nodes or node2 not in self.nodes:
+            return None
+
+        # Priority queue for Dijkstra's algorithm
+        priority_queue = [(0, node1)]  # (current_distance, current_node)
+        distances = {node: float('inf') for node in self.nodes}
+        distances[node1] = 0
+
+        # Dictionary to track the predecessor of each node
+        # Uncomment predecessors lines to print the path
+        # predecessors = {node: None for node in self.nodes}
+
+        # Set to track visited nodes
+        visited = set()
+
+        while priority_queue:
+            current_distance, current_node = heappop(priority_queue)
+
+            # If the current node is already visited, skip it
+            if current_node in visited:
+                continue
+
+            visited.add(current_node)
+
+            # If the current node is the destination, return the distance
+            if current_node == node2:
+                # path = []
+                # while current_node:
+                #     path.append(current_node.name)
+                #     current_node = predecessors[current_node]
+                # path.reverse()  # Reverse to get the path from start to end
+                # print(f"Path found: {' -> '.join(path)}")
+                return current_distance
+
+            # Skip processing if this is not the shortest path to current_node
+            if current_distance > distances[current_node]:
+                continue
+
+            neighbors = self.graph[current_node]
+            for neighbor, (distance, _, edge_travel_method, edge_access_level) in neighbors:
+
+                # Check if the vehicle can travel through the edge
+                if not vehicle.is_travel_possible(edge_travel_method, edge_access_level):
+                    continue
+
+                # Calculate the potential new distance
+                new_distance = current_distance + distance
+
+                # Update shortest distance if a better path is found
+                if distance < distances[neighbor]:
+                    distances[neighbor] = new_distance
+                    # predecessors[neighbor] = current_node
+                    heappush(priority_queue, (new_distance, neighbor))
+
+        # print(f"No path found from {node1.name} to {node2.name}.")
+        # If we finish the loop without finding node2, return infinity
+        return float('inf')
+
     def draw_matplotlib(self):
         # Create list of nodes
         g = nx.DiGraph()
@@ -186,6 +257,7 @@ class Graph:
                         color = "red"
 
                 # Add edge with distance
+                access_level = 4 - access_level  # Invert access level
                 if (node.name, adjacent.name) not in drawn_edges:
                     dot.edge(node.name, adjacent.name,
                              label=str(distance), color=color,
