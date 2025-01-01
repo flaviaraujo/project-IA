@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
 import simulation_data
+from graph.heurisitics import (
+    heuristic_fn1,
+    heuristic_fn2,
+    heuristic_fn3
+)
+
 import argparse         # command line arguments
 import json             # pretty printing
 
@@ -36,6 +42,7 @@ def display_view_graph_menu() -> None:
         "3 - Print graph\n"
         "4 - Print graph nodes\n"
         "5 - Print graph edges\n"
+        "6 - Print heuristic values\n"
         "0 - Back"
     )
 
@@ -117,12 +124,15 @@ def view_graph_menu(graph) -> None:
                 print(json.dumps(graph.serialize_nodes(), indent=2))
             case 5:
                 graph.print_edges()
+            case 6:
+                print("Heuristic values:")
+                print(json.dumps(graph.h, indent=2))
             case _:
                 print("Invalid option")
     pass
 
 
-def search_menu(graph, heuristic_option, verbose) -> None:
+def search_menu(mission_planner, heuristic_option, verbose) -> None:
     while True:
         display_search_menu()
         option = input_option()
@@ -150,12 +160,12 @@ def search_menu(graph, heuristic_option, verbose) -> None:
                 # mission_planner.a_star(verbose)
                 pass
             case 9:
-                change_heuristic_menu(heuristic_option, graph)
+                change_heuristic_menu(heuristic_option, mission_planner)
             case _:
                 print("Invalid option")
 
 
-def change_heuristic_menu(heuristic_option, graph) -> None:
+def change_heuristic_menu(heuristic_option, mission_planner) -> None:
     while True:
         display_change_heuristic_menu(heuristic_option)
         option = input_option()
@@ -164,23 +174,43 @@ def change_heuristic_menu(heuristic_option, graph) -> None:
                 return
             case 1:
                 heuristic_option = 1
+                heuristic_fn1({
+                    'graph': mission_planner.graph,
+                    'catastrophes': mission_planner.catastrophes,
+                    'vehicles': mission_planner.get_vehicles_list()
+                })
                 break
             case 2:
                 heuristic_option = 2
+                heuristic_fn2({
+                    'graph': mission_planner.graph,
+                    'catastrophes': mission_planner.catastrophes,
+                    'vehicles': mission_planner.get_vehicles_list()
+                })
                 break
             case 3:
                 heuristic_option = 3
+                heuristic_fn3({
+                    'graph': mission_planner.graph,
+                    'catastrophes': mission_planner.catastrophes,
+                    'vehicles': mission_planner.get_vehicles_list()
+                })
                 break
             case _:
                 print("Invalid option")
 
-    # TODO update the graph based on the selected heuristic
-
 
 def main(verbose) -> None:
-    heuristic_option  = 1
     simulation_option = 1
     mission_planner   = simulation_data.init_simulation(simulation_option)
+
+    # TODO use a more complex heuristic
+    heuristic_option  = 1
+    heuristic_fn1({
+        "graph":        mission_planner.graph,
+        "catastrophes": mission_planner.catastrophes,
+        "vehicles":     mission_planner.get_vehicles_list()
+    })
 
     while True:
         display_main_menu(verbose)
