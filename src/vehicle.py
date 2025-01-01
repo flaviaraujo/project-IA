@@ -1,6 +1,6 @@
 from supply    import Supply
 from functools import lru_cache
-import math
+from math      import ceil
 
 # Vehicle class
 # - name             : str   (unique identifier)
@@ -50,7 +50,7 @@ VEHICLE_SPECS = {
 
 
 ###
-# Helper functions
+# Utility functions
 ###
 
 def convert_access_level_to_str(access_level: int) -> str:
@@ -138,21 +138,28 @@ class Vehicle:
         self.tank = min(self.tank + liters, self.tank_capacity)
         return (
             max(0, self.tank + liters - self.tank_capacity),
-            math.ceil(liters * REFUEL_TIME)
+            ceil(liters * REFUEL_TIME)
         )
 
     @lru_cache(maxsize=None)
     def calculate_fuel_needed(self, distance: float) -> float:
         return distance * self.fuel_consumption / 100
 
-    def is_travel_possible(self, method: str, distance: float) -> bool:
+    def is_travel_possible(self, travel_method: str, access_level: int) -> bool:
         return (
-            method == self.travel_method
-            and self.tank_capacity >= self.calculate_fuel_needed(distance)
+            self.travel_method == travel_method
+            and self.access_level >= access_level
         )
 
-    def travel(self, method: str, distance: float) -> bool:
-        if self.is_travel_possible(method, distance):
+    def can_travel(self, travel_method: str, access_level: int, distance: float) -> bool:
+        return (
+            self.is_travel_possible(travel_method, access_level)
+            and self.tank >= self.calculate_fuel_needed(distance)
+        )
+
+    # TODO return travel time and pass speed multiplier as parameter
+    def travel(self, travel_method: str, access_level: int, distance: float) -> bool:
+        if self.can_travel(travel_method, access_level, distance):
             self.tank -= self.calculate_fuel_needed(distance)
             return True
         return False
