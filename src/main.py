@@ -26,10 +26,10 @@ def display_change_simulation_menu(simulation_option) -> None:
         "\n"
         f"Currently selected: {simulation_option}\n"
         "Change to:\n"
-        "1 - 1st Simulation\n"  # TODO add small simulation description
-        "2 - 2nd Simulation\n"  # TODO add small simulation description
-        "3 - 3rd Simulation\n"  # TODO add small simulation description
-        "0 - Back"
+        "1 -> 1st Simulation\n"  # TODO add small simulation description
+        "2 -> 2nd Simulation\n"  # TODO add small simulation description
+        "3 -> 3rd Simulation\n"  # TODO add small simulation description
+        "0 -> Back"
     )
 
 
@@ -37,13 +37,13 @@ def display_view_graph_menu() -> None:
     print(
         "\n"
         "View menu:\n"
-        "1 - Draw graph with graphviz\n"
-        "2 - Draw graph with matplotlib\n"
-        "3 - Print graph\n"
-        "4 - Print graph nodes\n"
-        "5 - Print graph edges\n"
-        "6 - Print heuristic values\n"
-        "0 - Back"
+        "1 -> Draw graph with graphviz\n"
+        "2 -> Draw graph with matplotlib\n"
+        "3 -> Print graph\n"
+        "4 -> Print graph nodes\n"
+        "5 -> Print graph edges\n"
+        "6 -> Print heuristic values\n"
+        "0 -> Back"
     )
 
 
@@ -51,13 +51,13 @@ def display_search_menu() -> None:
     print(
         "\n"
         "Search menu:\n"
-        "1 - Breadth-first search\n"
-        "2 - Depth-first search\n"
-        "3 - Uniform-cost search\n"
-        "4 - Greedy search\n"
-        "5 - A* search\n"
-        "9 - Change heuristic\n"
-        "0 - Back"
+        "1 -> Breadth-first search\n"
+        "2 -> Depth-first search\n"
+        "3 -> Uniform-cost search\n"
+        "4 -> Greedy search\n"
+        "5 -> A* search\n"
+        "9 -> Change heuristic\n"
+        "0 -> Back"
     )
 
 
@@ -66,10 +66,10 @@ def display_change_heuristic_menu(heuristic_option) -> None:
         "\n"
         f"Currently selected: {heuristic_option}\n"
         "Change heuristic function:\n"
-        "1 - Heuristic 1\n"
-        "2 - Heuristic 2\n"
-        "3 - Heuristic 3\n"
-        "0 - Back"
+        "1 -> Heuristic 1\n"
+        "2 -> Heuristic 2\n"
+        "3 -> Heuristic 3\n"
+        "0 -> Back"
     )
 
 
@@ -77,12 +77,12 @@ def display_main_menu(verbose) -> None:
     print(
         "\n"
         "Main menu:\n"
-        "1 - Change simulation\n"
-        "2 - View graph menu\n"
-        "3 - View catastrophes, fleet and supplies\n"
-        "4 - Search menu\n"
-        "9 - " + ("Disable" if verbose else "Enable") + " verbose mode\n"
-        "0 - Exit"
+        "1 -> Change simulation\n"
+        "2 -> View graph menu\n"
+        "3 -> View catastrophes, fleet and supplies\n"
+        "4 -> Search menu\n"
+        "9 -> " + ("Disable" if verbose else "Enable") + " verbose mode\n"
+        "0 -> Exit"
     )
 
 
