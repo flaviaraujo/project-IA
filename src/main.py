@@ -140,8 +140,7 @@ def search_menu(mission_planner, heuristic_option, verbose) -> None:
             case 0:
                 break
             case 1:
-                # TODO
-                # mission_planner.bfs(verbose)
+                mission_planner.planner("bfs")
                 pass
             case 2:
                 # TODO
