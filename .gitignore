@@ -6,3 +6,6 @@ report/output/*
 
 # Ignore __pycache__ directories
 src/**/__pycache__/
+
+# Ignore .idea directory
+.idea/
