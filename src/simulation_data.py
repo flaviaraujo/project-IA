@@ -93,16 +93,16 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                                starting_supplies)
 
             # Add the edges
-            graph.add_edge("A", "B", 2, 1.00, "air",   HIGH_ACCESS_LEVEL)
-            graph.add_edge("A", "B", 3, 1.00, "land",  HIGH_ACCESS_LEVEL)
-            graph.add_edge("A", "B", 3, 1.00, "water", HIGH_ACCESS_LEVEL)
-            graph.add_edge("A", "C", 3, 0.85, "land",  MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "D", 4, 0.75, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "E", 5, 1.00, "air",   MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "E", 6, 1.00, "land",  MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("C", "F", 6, 0.90, "land",  LOW_ACCESS_LEVEL)
-            graph.add_edge("D", "E", 7, 0.60, "land",  LOW_ACCESS_LEVEL)
-            graph.add_edge("E", "F", 8, 0.70, "land",  LOW_ACCESS_LEVEL)
+            graph.add_edge("A", "B", 20, 1.00, "air",   HIGH_ACCESS_LEVEL)
+            graph.add_edge("A", "B", 30, 1.00, "land",  HIGH_ACCESS_LEVEL)
+            graph.add_edge("A", "B", 30, 1.00, "water", HIGH_ACCESS_LEVEL)
+            graph.add_edge("A", "C", 30, 0.85, "land",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "D", 40, 0.75, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "E", 50, 1.00, "air",   MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "E", 60, 1.00, "land",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "F", 60, 0.90, "land",  LOW_ACCESS_LEVEL)
+            graph.add_edge("D", "E", 70, 0.60, "land",  LOW_ACCESS_LEVEL)
+            graph.add_edge("E", "F", 80, 0.70, "land",  LOW_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
             heuristic_option = 1
