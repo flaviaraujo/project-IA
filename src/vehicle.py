@@ -127,12 +127,25 @@ class Vehicle:
             "fuel_consumption": self.fuel_consumption,
         }
 
+    def copy(self):
+        vehicle_copy = Vehicle(self.name, self.category)
+        vehicle_copy.travel_method    = self.travel_method
+        vehicle_copy.speed            = self.speed
+        vehicle_copy.cargo            = self.cargo
+        vehicle_copy.cargo_contents   = self.cargo_contents.copy()
+        vehicle_copy.cargo_capacity   = self.cargo_capacity
+        vehicle_copy.tank             = self.tank
+        vehicle_copy.tank_capacity    = self.tank_capacity
+        vehicle_copy.fuel_consumption = self.fuel_consumption
+        vehicle_copy.access_level     = self.access_level
+        return vehicle_copy
+
     ###
     # Fuel related methods
     ###
 
     # Returns a tuple with:
-    # - the amount of fuel remaining
+    # - the amount of fuel remaining from the argument
     # - the time, in minutes, it took to refuel
     def refuel(self, liters: float) -> (float, int):
         self.tank = min(self.tank + liters, self.tank_capacity)
@@ -142,8 +155,11 @@ class Vehicle:
         )
 
     @lru_cache(maxsize=None)
-    def calculate_fuel_needed(self, distance: float) -> float:
-        return distance * self.fuel_consumption / 100
+    def calculate_fuel_needed(self, distance: int) -> float:
+        fuel_needed = distance * self.fuel_consumption / 100
+        additional_fuel_needed = max(0, fuel_needed - self.tank)
+        # round up the result to 2 decimal places
+        return ceil(additional_fuel_needed * 100) / 100
 
     def is_travel_possible(self, travel_method: str, access_level: int) -> bool:
         return (
@@ -151,18 +167,24 @@ class Vehicle:
             and self.access_level >= access_level
         )
 
-    def can_travel(self, travel_method: str, access_level: int, distance: float) -> bool:
+    def has_enough_fuel(self, distance: int) -> bool:
+        return self.tank >= self.calculate_fuel_needed(distance)
+
+    def can_travel(self, travel_method: str, access_level: int, distance: int) -> bool:
         return (
             self.is_travel_possible(travel_method, access_level)
-            and self.tank >= self.calculate_fuel_needed(distance)
+            and self.has_enough_fuel(distance)
         )
 
-    # TODO return travel time and pass speed multiplier as parameter
-    def travel(self, travel_method: str, access_level: int, distance: float) -> bool:
-        if self.can_travel(travel_method, access_level, distance):
-            self.tank -= self.calculate_fuel_needed(distance)
-            return True
-        return False
+    # TODO pass speed multiplier as parameter
+    # returns the time in minutes and the fuel consumed
+    def travel(self, distance: int) -> (int, float):
+        fuel_consumed = distance * self.fuel_consumption / 100
+        # round the fuel consumed to 2 decimal places
+        fuel_consumed = ceil(fuel_consumed * 100) / 100
+        self.tank -= fuel_consumed
+        return (distance / self.speed) * 60, fuel_consumed  # time in minutes
+        # return (distance / self.speed * speed_mult) * 60, fuel_consumed  # time in minutes (TODO)
 
     ###
     # Cargo related methods
