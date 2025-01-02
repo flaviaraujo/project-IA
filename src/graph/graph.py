@@ -145,7 +145,7 @@ class Graph:
         if isinstance(node2, str):
             node2 = next((n for n in self.nodes if n.name == node2), None)
 
-        if node1 not in self.nodes or node2 not in self.nodes:
+        if node1 is None or node2 is None:
             return None
 
         # Priority queue for Dijkstra's algorithm
