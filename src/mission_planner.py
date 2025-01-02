@@ -8,6 +8,13 @@
 # - supplies:     dictionary of supplies     where the key is the node name
 
 from graph.graph import Graph
+from algorithms import (
+    bfs,
+    dfs,
+    ucs,
+    greedy,
+    astar
+)
 
 
 class MissionPlanner:
@@ -74,3 +81,78 @@ class MissionPlanner:
     # Returns a list with all vehicles in the fleet
     def get_vehicles_list(self):
         return sum(self.fleet.values(), [])
+
+    ###
+    # Search methods
+    ###
+    def planner(self, algorithm: str):
+
+        # Get the search algorithm function
+        search_algorithm = None
+        match algorithm:
+            case "bfs":
+                search_algorithm = bfs.search
+            case "dfs":
+                search_algorithm = dfs.search     # TODO
+            case "ucs":
+                search_algorithm = ucs.search     # TODO
+            case "greedy":
+                search_algorithm = greedy.search  # TODO
+            case "astar":
+                search_algorithm = astar.search   # TODO
+            case _:
+                raise ValueError(f"Invalid search algorithm: {algorithm}")
+
+        # Define the structure to store the vehicles that
+        # can reach the catastrophes in time
+        # (Key: Catastrophe node, Value: List of vehicles)
+        catastrophe_vehicles = {}
+
+        for catastrophe_node, catastrophe in self.catastrophes.items():
+            catastrophe_response_time = catastrophe.time
+
+            # Find the vehicles that can reach the catastrophe
+            for vehicle_node, vehicles in self.fleet.items():
+                for vehicle in vehicles:
+
+                    # Run the search algorithm
+                    result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
+                                              vehicle_node, catastrophe_node)
+
+                    # Check if the vehicle can not reach the catastrophe
+                    if not result:
+                        continue
+
+                    # Unwrap the search algorithm result tuple
+                    operations, fuel_consumption = result
+
+                    # Add the search algorithm result tuple with the vehicle
+                    if catastrophe_node not in catastrophe_vehicles:
+                        catastrophe_vehicles[catastrophe_node] = []
+
+                    catastrophe_vehicles[catastrophe_node].append(
+                        (vehicle, operations, fuel_consumption)
+                    )
+
+        # TODO remove this
+        # Semi-serialize the catastrophe_vehicles structure to print it
+        import json
+        catastrophe_vehicles = {
+            node: [
+                {
+                    "vehicle": vehicle.name,
+                    "operations": [str(operation) for operation in operations],
+                    "fuel_consumption": fuel_consumption
+                }
+                for vehicle, operations, fuel_consumption in vehicles
+            ]
+            for node, vehicles in catastrophe_vehicles.items()
+        }
+        print(json.dumps(catastrophe_vehicles, indent=4))
+
+        # Find the optimal objective for each vehicle
+        # Find the path for each vehicle (call the respective search algorithm)
+        #     Consider destructive nodes/edges
+        #     When a vehicle resolves a catastrophe, check if it can help in other catastrophes
+        #     (prioritize catastrophes without vehicles to help), if not return to base
+        pass
