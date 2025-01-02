@@ -10,7 +10,7 @@ class Operation:
                  node:           str  = None,
                  fuel:           int  = None,
                  supplies:       dict = None):
-        valid_operations = {"move", "refuel", "drop", "load"}
+        valid_operations = {"start", "move", "refuel", "drop", "load"}
 
         if operation_type not in valid_operations:
             raise ValueError(
@@ -18,6 +18,7 @@ class Operation:
                 Must be one of {valid_operations}."
             )
 
+        # TODO add start time and possibly end time
         self.operation_type = operation_type
         self.vehicle = vehicle
         self.node = node
@@ -26,13 +27,15 @@ class Operation:
 
     def __str__(self):
         match self.operation_type:
-            case 'move':
+            case "start":
+                return f"Vehicle {self.vehicle}: Start at node {self.node}"
+            case "move":
                 return f"Vehicle {self.vehicle}: Move to node {self.node}"
-            case 'refuel':
+            case "refuel":
                 return f"Vehicle {self.vehicle}: Refuel {self.fuel} liters at node {self.node}"
-            case 'drop':
+            case "drop":
                 return f"Vehicle {self.vehicle}: Drop supplies {self.supplies} at node {self.node}"
-            case 'load':
+            case "load":
                 return f"Vehicle {self.vehicle}: Load supplies {self.supplies} at node {self.node}"
             case _:
                 return "Unknown operation"
