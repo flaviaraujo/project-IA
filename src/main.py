@@ -154,12 +154,12 @@ def search_menu(mission_planner, heuristic_option, verbose) -> None:
             case 5:
                 mission_planner.planner(verbose, "astar")
             case 9:
-                change_heuristic_menu(heuristic_option, mission_planner)
+                heuristic_option = change_heuristic_menu(heuristic_option, mission_planner)
             case _:
                 print("Invalid option")
 
 
-def change_heuristic_menu(heuristic_option, mission_planner) -> None:
+def change_heuristic_menu(heuristic_option, mission_planner) -> int:
     while True:
         display_change_heuristic_menu(heuristic_option)
         option = input_option()
@@ -192,6 +192,8 @@ def change_heuristic_menu(heuristic_option, mission_planner) -> None:
                 break
             case _:
                 print("Invalid option")
+
+    return heuristic_option
 
 
 def main(verbose) -> None:
