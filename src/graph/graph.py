@@ -129,15 +129,6 @@ class Graph:
                     a.remove((node2, edge_info))
                     return
 
-    def add_heuristic(self, node, value):
-        if node in self.nodes:
-            self.h[node] = value
-
-    def update_heuristic(self, heuristic_fn):
-        for node in self.nodes:
-            # TODO pass the necessary parameters to the heuristic function
-            self.h[node] = heuristic_fn(node)
-
     # Calculates the shortest distance from node1 to node2
     # without considering the vehicle's travel method and access level.
     # Uses Dijkstra's algorithm with a priority queue.
