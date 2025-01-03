@@ -83,3 +83,9 @@ class Catastrophe:
 
     def get_supplies_demand_amount(self):
         return sum(self.supplies_demand.values())
+
+    def is_resolved(self):
+        return (not self.supplies_demand) or sum(self.supplies_demand.values()) == 0
+
+    def has_time_expired(self, time_passed):
+        return self.time <= time_passed
