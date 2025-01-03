@@ -8,9 +8,6 @@
 # - supplies:     dictionary of supplies     where the key is the node name
 
 from graph.graph import Graph
-from vehicle     import Vehicle
-from catastrophe import Catastrophe
-from operation   import Operation
 from algorithms  import (
     bfs,
     dfs,
@@ -18,6 +15,8 @@ from algorithms  import (
     greedy,
     astar
 )
+
+from operation import operation_order
 
 import json
 
@@ -87,6 +86,7 @@ class MissionPlanner:
     def get_vehicles_list(self):
         return sum(self.fleet.values(), [])
 
+    # Currently not used
     def get_vehicle(self, vehicle_name: str):
         for vehicle in sum(self.fleet.values(), []):
             if vehicle.name == vehicle_name:
@@ -130,10 +130,7 @@ class MissionPlanner:
                 continue
 
             # Find the vehicle with the least fuel consumption
-            vehicle_data = available_vehicles.pop(0)
-            vehicle = vehicle_data["vehicle"]
-            operations = vehicle_data["operations"]
-            fuel_consumption = vehicle_data["fuel_consumption"]
+            vehicle, operations, fuel_consumption = available_vehicles.pop(0)
 
             # Store the vehicle and its operations to resolve the catastrophe
             vehicles_operations[catastrophe_key] = {
@@ -142,20 +139,14 @@ class MissionPlanner:
                 "fuel_consumption": fuel_consumption
             }
 
-            # Get the vehicle object from the fleet
-            vehicle_object = self.get_vehicle(vehicle)
-            if not vehicle_object:
-                print(f"ERROR: Vehicle {vehicle} not found in the fleet")
-                continue
-
             # Assign the objective to the vehicle as well as the operations
-            vehicle_object.objective  = catastrophe_key
-            vehicle_object.operations = operations
+            vehicle.objective  = catastrophe_key
+            vehicle.operations = operations
 
             # Remove the selected vehicle from all catastrophe options
             for key, vehicles in catastrophe_vehicles.items():
                 # Update the list for the current catastrophe, removing the selected vehicle
-                catastrophe_vehicles[key] = [v for v in vehicles if v["vehicle"] != vehicle]
+                catastrophe_vehicles[key] = [v for v in vehicles if v[0].name != vehicle.name]
 
             # Resort the catastrophe keys based on updated vehicle counts
             sorted_catastrophe_keys = sorted(catastrophe_vehicles.keys(),
@@ -204,34 +195,48 @@ class MissionPlanner:
                         (vehicle, operations, fuel_consumption)
                     )
 
-        # Semi-serialize the catastrophe_vehicles
-        catastrophe_vehicles = {
-            node: [
-                {
-                    "vehicle": vehicle.name,
-                    "operations": [str(operation) for operation in operations],
-                    "fuel_consumption": fuel_consumption
-                }
-                for vehicle, operations, fuel_consumption in vehicles
-            ]
-            for node, vehicles in catastrophe_vehicles.items()
-        }
-
         if verbose:
+            # Semi-serialize the catastrophe_vehicles
+            catastrophe_vehicles_serialized = {
+                node: [
+                    {
+                        "vehicle": vehicle.name,
+                        "operations": [str(operation) for operation in operations],
+                        "fuel_consumption": fuel_consumption
+                    }
+                    for vehicle, operations, fuel_consumption in vehicles
+                ]
+                for node, vehicles in catastrophe_vehicles.items()
+            }
+
             print("Catastrophe that can be reached in time by the vehicles:")
-            print(json.dumps(catastrophe_vehicles, indent=4))
+            print(json.dumps(catastrophe_vehicles_serialized, indent=4))
 
         # Find the optimal objective for each vehicle
         vehicles_operations = self.assign_optimal_objectives(catastrophe_vehicles, self.fleet)
 
         if verbose:
+            vehicles_operations_serialized = {
+                node: {
+                    "vehicle": vehicle["vehicle"].name,
+                    "operations": [str(operation) for operation in vehicle["operations"]],
+                    "fuel_consumption": vehicle["fuel_consumption"]
+                }
+                for node, vehicle in vehicles_operations.items()
+            }
+
             print("\nVehicles elected for each catastrophe:")
-            print(json.dumps(vehicles_operations, indent=4))
+            print(json.dumps(vehicles_operations_serialized, indent=4))
 
         # Execute the operations and update the vehicle's state by time order
-        # TODO
+        operations = sum((v["operations"] for v in vehicles_operations.values()), [])
 
-        # When a vehicle resolves a catastrophe find the next catastrophe to resolve
-        # Repeat until there are no more catastrophes to resolve or the time is over
-        # TODO
+        # sort the operations by time and in case of tie by the operation type
+        # in the following order: start, move, refuel, drop, load
+        operations = sorted(operations, key=lambda x: (x.time, operation_order[x.operation_type]))
+
+        # TODO execute the operations and update the state
+        #   When a vehicle resolves a catastrophe find the next catastrophe to resolve
+        #   Repeat until there are no more catastrophes to resolve or the time is over
+        #   TODO
         pass
