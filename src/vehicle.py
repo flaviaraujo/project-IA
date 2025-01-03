@@ -1,6 +1,8 @@
 from supply    import Supply
-from functools import lru_cache
+from supply    import perishable_kinds
+
 from math      import ceil
+import copy
 
 # Vehicle class
 # - name             : str   (unique identifier)
@@ -113,6 +115,9 @@ class Vehicle:
     def __hash__(self):
         return hash(self.name)
 
+    def copy(self):
+        return copy.deepcopy(self)
+
     def serialize(self):
         return {
             "name": self.name,
@@ -126,19 +131,6 @@ class Vehicle:
             "tank_capacity": self.tank_capacity,
             "fuel_consumption": self.fuel_consumption,
         }
-
-    def copy(self):
-        vehicle_copy = Vehicle(self.name, self.category)
-        vehicle_copy.travel_method    = self.travel_method
-        vehicle_copy.speed            = self.speed
-        vehicle_copy.cargo            = self.cargo
-        vehicle_copy.cargo_contents   = self.cargo_contents.copy()
-        vehicle_copy.cargo_capacity   = self.cargo_capacity
-        vehicle_copy.tank             = self.tank
-        vehicle_copy.tank_capacity    = self.tank_capacity
-        vehicle_copy.fuel_consumption = self.fuel_consumption
-        vehicle_copy.access_level     = self.access_level
-        return vehicle_copy
 
     ###
     # Fuel related methods
@@ -154,7 +146,6 @@ class Vehicle:
             ceil(liters * REFUEL_TIME)
         )
 
-    @lru_cache(maxsize=None)
     def calculate_fuel_needed(self, distance: int) -> float:
         fuel_needed = distance * self.fuel_consumption / 100
         additional_fuel_needed = max(0, fuel_needed - self.tank)
@@ -231,3 +222,61 @@ class Vehicle:
 
         # Update the current cargo weight
         self.cargo -= weight
+
+    def load_supplies_for_catastrophe(
+        self, supplies: dict[str, int]
+    ) -> (dict[str, int], dict[str, Supply]):
+
+        supplies_loaded = {}
+        supplies_left = {}
+
+        # Remove unnecessary supplies from cargo
+        for supply_kind in list(self.cargo_contents.keys()):
+            if supply_kind not in supplies:
+                # Remove supply to save space for needed ones
+                self.cargo -= self.cargo_contents[supply_kind].amount
+                del self.cargo_contents[supply_kind]
+
+        # Sort supplies by perishability: prioritize perishable items (True > False)
+        sorted_supplies = sorted(
+            supplies.items(),
+            key=lambda item: not perishable_kinds.get(item[0], False)
+        )
+
+        for supply_kind, demand in sorted_supplies:
+            # Check if the supply exists in the vehicle's cargo contents
+            if supply_kind not in self.cargo_contents:
+                self.cargo_contents[supply_kind] = Supply(kind=supply_kind, amount=0)
+
+            # Get the supply object
+            supply = self.cargo_contents[supply_kind]
+
+            # Calculate how much can be loaded based on demand and current cargo space
+            loadable_amount = min(demand, self.cargo_capacity - self.cargo)
+            supplies_loaded[supply_kind] = loadable_amount
+
+            # Update the supply's amount in the vehicle and total cargo weight
+            supply.amount += loadable_amount
+            self.cargo += loadable_amount
+
+            # Track leftover supplies
+            leftover_amount = demand - loadable_amount
+            if leftover_amount > 0:
+                supplies_left[supply_kind] = Supply(
+                    kind=supply_kind, amount=leftover_amount
+                )
+
+        # Cleanup empty supplies
+        self.cargo_contents = {
+            kind: supply for kind, supply in self.cargo_contents.items() if supply.amount > 0
+        }
+
+        supplies_loaded = {
+            kind: amount for kind, amount in supplies_loaded.items() if amount > 0
+        }
+
+        supplies_left = {
+            kind: supply for kind, supply in supplies_left.items() if supply.amount > 0
+        }
+
+        return supplies_loaded, supplies_left
