@@ -4,6 +4,7 @@ from graph.graph import Graph
 from vehicle     import Vehicle
 from operation   import Operation
 
+from math        import ceil
 from queue       import Queue
 
 
@@ -22,26 +23,41 @@ def search(graph: Graph,
     if start is None or goal is None:
         return None
 
+    # Copy the graph to avoid modifying the original one
+    graph = graph.copy()
+
     # Copy the vehicle to avoid modifying the original one
     vehicle = vehicle.copy()
 
     # First operation: start
-    start_op = Operation("start", vehicle=vehicle.name, node=start.name)
+    start_op = Operation(0, "start", vehicle=vehicle.name, node=start.name)
 
-    # Initialize the queue with tuples (node, operations, time, fuel_consumption)
+    # Load the supplies to maximize the catastrophe resolution
+    supplies_loaded, _ = vehicle.load_supplies_for_catastrophe(goal.catastrophe.supplies_demand)
+    load_op = Operation(0, "load", vehicle=vehicle.name, node=start.name, supplies=supplies_loaded)
+
+    # Initialize the queue with tuples (node, operations, time)
     queue = Queue()
-    queue.put((start, [start_op], 0, 0))  # Start node, operations, time, fuel consumption
+    queue.put((start, [start_op, load_op], 0))
 
     # Keep track of visited nodes
     visited = set()
+    visited.add(start.name)
 
     while not queue.empty():
-        node, operations, current_time, fuel_consumption = queue.get()
+        node, operations, current_time = queue.get()
 
         # Solution found
         if node == goal:
-            # TODO: append the "drop supplies" operation
-            # NOTE copy the graph to avoid modifying the original one
+            # Append the "drop supplies" operation
+            cargo_supplied, remaining_cargo = node.catastrophe.supply(vehicle.cargo_contents)
+            drop_op = Operation(current_time, "drop", vehicle=vehicle.name,
+                                node=node.name, supplies=cargo_supplied)
+            operations.append(drop_op)
+
+            # Update the vehicle's cargo contents
+            vehicle.cargo_contents = remaining_cargo
+
             # TODO: check if the catastrophe is fully resolved
             # otherwise:
             # 1. Go to neerest node
@@ -50,16 +66,19 @@ def search(graph: Graph,
             # 4. Go to the catastrophe
             # 5. Drop the supplies
             # 6. Repeat until the catastrophe is resolved
+
+            fuel_consumption = ceil(sum([op.fuel_consumed or 0 for op in operations]) * 100) / 100
             return operations, fuel_consumption
 
         # Explore neighbors
         for prox, (e_distance, _, e_travel_method, e_access_level) in graph.graph[node]:
 
+            # TODO consider the supplies with expiration in the vehicle
+
             # Clone the vehicle state for this edge
             tmp_vehicle = vehicle.copy()
-            tmp_operations = operations.copy()
+            tmp_operations = [op.copy() for op in operations]
             tmp_current_time = current_time
-            tmp_fuel_consumption = fuel_consumption
 
             # If the response time for the catastrophe has passed, stop processing
             if tmp_current_time >= response_time:
@@ -72,16 +91,19 @@ def search(graph: Graph,
             # Check if the node has already been visited
             # NOTE the check is made here do to the multiple edges between nodes
             # this way unnecessary visits are avoided
-            if prox in visited:
+            if prox.name in visited:
                 continue
 
-            visited.add(prox)
+            visited.add(prox.name)
+
+            print(f"Exploring node {prox.name}")
 
             # Ensure the vehicle has enough fuel
             if not tmp_vehicle.has_enough_fuel(e_distance):
                 # Refuel if necessary
                 fuel_needed = tmp_vehicle.calculate_fuel_needed(e_distance)
-                refuel_op = Operation("refuel", vehicle=tmp_vehicle.name,
+
+                refuel_op = Operation(tmp_current_time, "refuel", vehicle=tmp_vehicle.name,
                                       node=node.name, fuel=fuel_needed)
 
                 # refuel the ammount needed in order to reach the node
@@ -96,8 +118,8 @@ def search(graph: Graph,
 
             # Travel to the next node
             travel_time, fuel_used = tmp_vehicle.travel(e_distance)
+            start_time_travel = tmp_current_time
             tmp_current_time += travel_time
-            tmp_fuel_consumption += fuel_used
 
             # Check response time after traveling
             if tmp_current_time >= response_time:
@@ -107,11 +129,12 @@ def search(graph: Graph,
             vehicle = tmp_vehicle
             operations = tmp_operations
             current_time = tmp_current_time
-            fuel_consumption = tmp_fuel_consumption
 
             # Add the neighbor to the queue
-            travel_op = Operation("move", vehicle=tmp_vehicle.name, node=prox.name)
-            queue.put((prox, tmp_operations + [travel_op], tmp_current_time, tmp_fuel_consumption))
+            print(f"Adding node {prox.name} to the queue, fuel used: {fuel_used}")
+            travel_op = Operation(start_time_travel, "move", vehicle=tmp_vehicle.name,
+                                  node=prox.name, fuel_consumed=fuel_used)
+            queue.put((prox, tmp_operations + [travel_op], tmp_current_time))
 
     # No solution found
     return None
