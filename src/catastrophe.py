@@ -5,6 +5,7 @@
 
 from supply import Supply
 from heapq import heappush, heappop
+from vehicle import Vehicle
 
 import copy
 
@@ -85,6 +86,27 @@ class Catastrophe:
                 cargo_supplied[supply_kind] = provided
 
         return cargo_supplied, remaining_cargo
+    
+    def find_acessible_vehicles(self, graph, catastrophe_node, vehicles, max_response_time):
+        self.accessible_vehicles = []
+
+        for vehicle in vehicles:
+            travel_time, fuel_used, path = calculate_travel_time_and_fuel(graph, vehicle.current_node, catastrophe_node, vehicle)
+            if travel_time <= max_response_time:
+                self.accessible_vehicles.append((vehicle.name, path, fuel_used))
+                
+    def assign_vehicle_to_catastrophe(self):
+        # Sort accessible vehicles by fuel consumption
+        self.accessible_vehicles.sort(key=lambda v: v[2])
+
+        if self.accessible_vehicles:
+            # Get the vehicle with the least fuel consumption
+            best_vehicle_name, path, fuel_consumption = self.accessible_vehicles[0]
+            if best_vehicle_name:
+                best_vehicle_name.assign_objective(self)
+    
+    
+                
 
 def calculate_travel_time_and_fuel(graph, start_node, end_node, vehicle):
     if isinstance(start_node, str):
@@ -127,16 +149,6 @@ def calculate_travel_time_and_fuel(graph, start_node, end_node, vehicle):
                 heappush(priority_queue, (new_distance, new_fuel, neighbor, path))
 
     return float('inf'), float('inf'), []
-
-def find_vehicles_for_catastrophe(graph, catastrophe_node, vehicles, max_response_time):
-    accessible_vehicles = []
-
-    for vehicle in vehicles:
-        travel_time, fuel_used, path = calculate_travel_time_and_fuel(graph, vehicle.current_node, catastrophe_node, vehicle)
-        if travel_time <= max_response_time:
-            accessible_vehicles.append((vehicle.name, path, fuel_used))
-
-    return accessible_vehicles
 
 def update_catastrophe_data(graph, catastrophes, vehicles):
     for node in graph.nodes:
