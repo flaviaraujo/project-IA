@@ -87,12 +87,12 @@ class Catastrophe:
 
         return cargo_supplied, remaining_cargo
     
-    def find_acessible_vehicles(self, graph, catastrophe_node, vehicles, max_response_time):
+    def find_acessible_vehicles(self, graph, catastrophe_node, vehicles):
         self.accessible_vehicles = []
 
         for vehicle in vehicles:
             travel_time, fuel_used, path = calculate_travel_time_and_fuel(graph, vehicle.current_node, catastrophe_node, vehicle)
-            if travel_time <= max_response_time:
+            if travel_time <= self.time:
                 self.accessible_vehicles.append((vehicle.name, path, fuel_used))
                 
     def assign_vehicle_to_catastrophe(self):
