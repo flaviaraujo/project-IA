@@ -3,6 +3,8 @@
 # node           : str  - Node name where the operation takes place
 # supplies       : dict - A dictionary with keys as supply types and values as Supply objects
 
+
+from math import ceil
 import copy
 
 
@@ -23,7 +25,7 @@ class Operation:
                 Must be one of {valid_operations}."
             )
 
-        self.time = time
+        self.time = ceil(time)
         self.operation_type = operation_type
         self.vehicle = vehicle
         self.node = node
@@ -32,17 +34,18 @@ class Operation:
         self.supplies = supplies or {}
 
     def __str__(self):
+        time_str = f"{str(self.time).rjust(3)}"
         match self.operation_type:
             case "start":
-                return f"[{self.time}] Vehicle {self.vehicle}: Start at node {self.node}"
+                return f"[{time_str}] Vehicle {self.vehicle}: Start at node {self.node}"
             case "move":
-                return f"[{self.time}] Vehicle {self.vehicle}: Move to node {self.node}"
+                return f"[{time_str}] Vehicle {self.vehicle}: Move to node {self.node}"
             case "refuel":
-                return f"[{self.time}] Vehicle {self.vehicle}: Refuel {self.fuel} liters at node {self.node}"
+                return f"[{time_str}] Vehicle {self.vehicle}: Refuel {self.fuel} liters at node {self.node}"
             case "drop":
-                return f"[{self.time}] Vehicle {self.vehicle}: Drop supplies {self.supplies} at node {self.node}"
+                return f"[{time_str}] Vehicle {self.vehicle}: Drop supplies {self.supplies} at node {self.node}"
             case "load":
-                return f"[{self.time}] Vehicle {self.vehicle}: Load supplies {self.supplies} at node {self.node}"
+                return f"[{time_str}] Vehicle {self.vehicle}: Load supplies {self.supplies} at node {self.node}"
             case _:
                 return "Unknown operation"
 
