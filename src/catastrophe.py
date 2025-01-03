@@ -43,3 +43,6 @@ class Catastrophe:
                 self.supplies_demand[supply] -= supplies[supply]
                 if self.supplies_demand[supply] == 0:
                     self.supplies_demand.pop(supply)
+
+    def get_supplies_demand_amount(self):
+        return sum(self.supplies_demand.values())
