@@ -115,12 +115,28 @@ class Graph:
             self.graph[node2].append((node1, edge_info))
 
     def destroy_node(self, node):
+        # Get the node object if it's a string
+        if isinstance(node, str):
+            node = next((n for n in self.nodes if n.name == node), None)
+
+        if node is None:
+            return
+
         # Remove the node from the list of nodes
         self.nodes.remove(node)
         # Remove all edges that contain the node
         del self.graph[node]
 
     def destroy_edges(self, node1, node2):
+        if isinstance(node1, str):
+            node1 = next((n for n in self.nodes if n.name == node1), None)
+
+        if isinstance(node2, str):
+            node2 = next((n for n in self.nodes if n.name == node2), None)
+
+        if node1 is None or node2 is None:
+            return
+
         a = self.graph[node1]
         for (node1, edge_info) in a:
             if node1 == node2:
