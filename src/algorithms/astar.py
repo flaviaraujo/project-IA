@@ -13,7 +13,8 @@ def search(graph: Graph,
            vehicle: Vehicle,
            response_time: int,
            start_name: str,
-           goal_name: str) -> list[Operation]:
+           goal_name: str,
+           start_time: int = 0) -> list[Operation]:
 
     if isinstance(start_name, str):
         start = next((n for n in graph.nodes if n.name == start_name), None)
@@ -31,15 +32,22 @@ def search(graph: Graph,
     vehicle = vehicle.copy()
 
     # First operation: start
-    start_op = Operation(0, "start", vehicle=vehicle.name, node=start.name)
+    first_ops = []
+    if start_time == 0:
+        start_op = Operation(0, "start", vehicle=vehicle.name, node=start.name)
+        first_ops.append(start_op)
 
     # Load the supplies to maximize the catastrophe resolution
+    vehicle_cargo_contents = vehicle.cargo_contents.copy()
     supplies_loaded, _ = vehicle.load_supplies_for_catastrophe(goal.catastrophe.supplies_demand)
-    load_op = Operation(0, "load", vehicle=vehicle.name, node=start.name, supplies=supplies_loaded)
+    if vehicle_cargo_contents != vehicle.cargo_contents:
+        load_op = Operation(0, "load", vehicle=vehicle.name,
+                            node=start.name, supplies=supplies_loaded)
+        first_ops.append(load_op)
 
     # Initialize the frontier with tuples (f(n) = g(n) + h(n), node, operations, time)
     f = graph.h[start.name][goal.name][vehicle.category]
-    frontier = [(f, start, [start_op, load_op], 0)]
+    frontier = [(f, start, first_ops, start_time)]
 
     # Keep track of visited nodes
     visited = set()
@@ -84,7 +92,13 @@ def search(graph: Graph,
 
             # If there are no neighbors the vehicle can't help the catastrophe
             if not neighbors:
+                # Update the fuel consumption
                 fuel_consumption = ceil(sum([op.fuel_consumed or 0 for op in operations]) * 100) / 100
+                # Update the time from the operations
+                operation_time = 0
+                for op in operations:
+                    op.time = operation_time
+                    operation_time += op.duration
                 return operations, fuel_consumption
 
             nearest_node, edge = min(neighbors, key=lambda x: x[1][0])
@@ -109,18 +123,20 @@ def search(graph: Graph,
                 if tmp_current_time >= response_time:
                     break
 
-                travel_op = Operation(start_time_travel, "move", vehicle=vehicle.name,
+                travel_op = Operation(start_time_travel, "move",
+                                      duration=travel_time, vehicle=vehicle.name,
                                       node=nearest_node.name, fuel_consumed=fuel_used)
                 tmp_operations.append(travel_op)
 
                 # Refuel if necessary
                 if not tmp_vehicle.has_enough_fuel(e_distance):
                     fuel_needed = tmp_vehicle.calculate_fuel_needed(e_distance)
-                    refuel_op = Operation(current_time, "refuel", vehicle=vehicle.name,
-                                          node=nearest_node.name, fuel=fuel_needed)
-
                     _, refuel_time = tmp_vehicle.refuel(fuel_needed)
                     tmp_current_time += refuel_time
+
+                    refuel_op = Operation(tmp_current_time, "refuel",
+                                          duration=refuel_time, vehicle=vehicle.name,
+                                          node=nearest_node.name, fuel=fuel_needed)
                     tmp_operations.append(refuel_op)
 
                     if tmp_current_time >= response_time:
@@ -128,7 +144,7 @@ def search(graph: Graph,
 
                 # Load the supplies
                 supplies_loaded, _ = tmp_vehicle.load_supplies_for_catastrophe(node.catastrophe.supplies_demand)
-                load_op = Operation(current_time, "load", vehicle=vehicle.name,
+                load_op = Operation(tmp_current_time, "load", vehicle=vehicle.name,
                                     node=nearest_node.name, supplies=supplies_loaded)
                 tmp_operations.append(load_op)
 
@@ -140,14 +156,15 @@ def search(graph: Graph,
                 if tmp_current_time >= response_time:
                     break
 
-                travel_op = Operation(start_time_travel, "move", vehicle=vehicle.name,
+                travel_op = Operation(start_time_travel, "move",
+                                      duration=travel_time, vehicle=vehicle.name,
                                       node=node.name, fuel_consumed=fuel_used)
                 tmp_operations.append(travel_op)
 
                 # Drop the supplies
                 cargo_supplied, remaining_cargo = node.catastrophe.supply(tmp_vehicle.cargo_contents)
 
-                drop_op = Operation(current_time, "drop", vehicle=vehicle.name,
+                drop_op = Operation(tmp_current_time, "drop", vehicle=vehicle.name,
                                     node=node.name, supplies=cargo_supplied)
                 tmp_operations.append(drop_op)
 
@@ -160,7 +177,13 @@ def search(graph: Graph,
                 operations = tmp_operations
                 current_time = tmp_current_time
 
+            # Update the fuel consumption
             fuel_consumption = ceil(sum([op.fuel_consumed or 0 for op in operations]) * 100) / 100
+            # Update the time from the operations
+            operation_time = 0
+            for op in operations:
+                op.time = operation_time
+                operation_time += op.duration
             return operations, fuel_consumption
 
         # Explore neighbors
@@ -193,14 +216,14 @@ def search(graph: Graph,
             if not tmp_vehicle.has_enough_fuel(e_distance):
                 # Refuel if necessary
                 fuel_needed = tmp_vehicle.calculate_fuel_needed(e_distance)
-
-                refuel_op = Operation(tmp_current_time, "refuel", vehicle=tmp_vehicle.name,
-                                      node=node.name, fuel=fuel_needed)
-
                 # refuel the ammount needed in order to reach the node
                 # NOTE ignores fuel left in node as it is not considered in this model
                 _, refuel_time = tmp_vehicle.refuel(fuel_needed)
                 tmp_current_time += refuel_time
+
+                refuel_op = Operation(tmp_current_time, "refuel",
+                                      duration=refuel_time, vehicle=tmp_vehicle.name,
+                                      node=node.name, fuel=fuel_needed)
                 tmp_operations.append(refuel_op)
 
                 # Check response time after refueling
@@ -227,7 +250,8 @@ def search(graph: Graph,
             f = g + h
 
             # Add the neighbor to the frontier
-            travel_op = Operation(start_time_travel, "move", vehicle=tmp_vehicle.name,
+            travel_op = Operation(start_time_travel, "move",
+                                  duration=travel_time, vehicle=tmp_vehicle.name,
                                   node=prox.name, fuel_consumed=fuel_used)
             frontier.append((f, prox, tmp_operations + [travel_op], tmp_current_time))
 
