@@ -1,7 +1,7 @@
 from mission_planner import MissionPlanner
 from catastrophe     import Catastrophe
 from vehicle         import Vehicle
-from supply          import Supply
+# from supply          import Supply
 from graph.graph     import Graph
 
 from vehicle import (
@@ -313,8 +313,8 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             ###
 
             catastrophes = {
-                "G": Catastrophe(300, {"food": 300, "water": 500, "soskit": 50}),
-                "L": Catastrophe(600, {"food": 300, "water": 100})
+                "G": Catastrophe(300, {"food": 150, "water": 100, "soskit": 50}),
+                "L": Catastrophe(600, {"food": 175, "water":  25})
             }
 
             ###
@@ -378,46 +378,62 @@ def init_simulation(option: int) -> (MissionPlanner, int):
 
             # Add the edges
             graph.add_edge("A", "B", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("A", "B", 20, 1.00, "air", MEDIUM_ACCESS_LEVEL)
+            # graph.add_edge("A", "B", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("A", "C", 30, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("A", "C", 30, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "C",  5, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Low-cost direct path (UCS favored)
+            # graph.add_edge("A", "C",  5, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("B", "D", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "D", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "D", 15, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Adds depth for DFS
+            # graph.add_edge("A", "D", 15, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("B", "E", 30, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "E", 30, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "E", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Shortcut for BFS
+            # graph.add_edge("B", "E", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("C", "F", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("C", "F", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "F", 50, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Higher cost (disfavor UCS)
+            # graph.add_edge("B", "F", 50, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("C", "G", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("C", "G", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "F", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Favor UCS
+            # graph.add_edge("C", "F", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("D", "H", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("D", "H", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "G", 30, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Suboptimal for UCS, BFS
+            # graph.add_edge("C", "G", 30, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("D", "I", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("D", "I", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("D", "H", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Adds depth for DFS
+            # graph.add_edge("D", "H", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("E", "J", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("E", "J", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("E", "J", 25, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Creates a detour
+            # graph.add_edge("E", "J", 25, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("E", "K", 40, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("E", "K", 40, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "L",  5, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Optimal for UCS
+            # graph.add_edge("F", "L",  5, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("F", "L", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("F", "L", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "M", 15, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Non-optimal
+            # graph.add_edge("F", "M", 15, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("F", "M", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("F", "M", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "N", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            # graph.add_edge("G", "N", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("G", "N", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("G", "N", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "O", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Longer path
+            # graph.add_edge("G", "O", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("G", "O", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("G", "O", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("L", "O", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Connects catastrophes
+            # graph.add_edge("L", "O", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+
+            # Add alternate paths and loops
+            graph.add_edge("H", "L", 40, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Loop for BFS/DFS variance
+            # graph.add_edge("H", "L", 40, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+
+            graph.add_edge("I", "G", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Shortcut for UCS
+            # graph.add_edge("I", "G", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+
+            graph.add_edge("J", "M", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            # graph.add_edge("J", "M", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+
+            graph.add_edge("K", "N", 50, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            # graph.add_edge("K", "N", 50, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+
+            graph.add_edge("M", "O",  5, 1.00, "land", MEDIUM_ACCESS_LEVEL)  # Low-cost alternate path
+            # graph.add_edge("M", "O",  5, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
             heuristic_option = 2
@@ -427,18 +443,11 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 "vehicles":     sum(fleet.values(), [])
             })
 
-            # Create destructible nodes conditions
-            destructible_nodes = {
-                "E": 300
-            }
-            graph.destructible_nodes = destructible_nodes
+            # No destructible nodes
+            graph.destructible_nodes = {}
 
-            # Create destructible edges conditions
-            destructible_edges = {
-                ("A", "B"): 350,
-                ("B", "E"): 200
-            }
-            graph.destructible_edges = destructible_edges
+            # No destructible edges
+            graph.destructible_edges = {}
 
             # return the MissionPlanner object
             return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
