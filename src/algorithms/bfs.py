@@ -79,7 +79,7 @@ def search(graph: Graph,
 
             # Find the nearest node to the catastrophe
             neighbors = []
-            for prox, edge in graph.graph[node]:
+            for prox, edge in graph.graph.get(node, []):
                 _, _, e_travel_method, e_access_level = edge
                 if not vehicle.is_travel_possible(e_travel_method, e_access_level):
                     continue
@@ -183,7 +183,7 @@ def search(graph: Graph,
             return operations, fuel_consumption
 
         # Explore neighbors
-        for prox, (e_distance, _, e_travel_method, e_access_level) in graph.graph[node]:
+        for prox, (e_distance, _, e_travel_method, e_access_level) in graph.graph.get(node, []):
 
             # Clone the vehicle state for this edge
             tmp_vehicle = vehicle.copy()
