@@ -144,24 +144,15 @@ def search_menu(mission_planner, heuristic_option, verbose) -> None:
             case 0:
                 break
             case 1:
-                mission_planner.planner("bfs")
-                pass
+                mission_planner.planner(verbose, "bfs")
             case 2:
-                # TODO
-                # mission_planner.dfs(verbose)
-                pass
+                mission_planner.planner(verbose, "dfs")
             case 3:
-                # TODO
-                # mission_planner.ucs(verbose)
-                pass
+                mission_planner.planner(verbose, "ucs")
             case 4:
-                # TODO
-                # mission_planner.greedy(verbose)
-                pass
+                mission_planner.planner(verbose, "greedy")
             case 5:
-                # TODO
-                # mission_planner.a_star(verbose)
-                pass
+                mission_planner.planner(verbose, "astar")
             case 9:
                 change_heuristic_menu(heuristic_option, mission_planner)
             case _:
