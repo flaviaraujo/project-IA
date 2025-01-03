@@ -194,8 +194,6 @@ def search(graph: Graph,
             if tmp_current_time >= response_time:
                 continue
 
-            # TODO consider the supplies with expiration in the vehicle
-
             # Check if the vehicle can access the node
             if not tmp_vehicle.is_travel_possible(e_travel_method, e_access_level):
                 continue

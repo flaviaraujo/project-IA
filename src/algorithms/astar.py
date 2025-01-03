@@ -189,8 +189,6 @@ def search(graph: Graph,
         # Explore neighbors
         for prox, (e_distance, _, e_travel_method, e_access_level) in graph.graph[node]:
 
-            # TODO consider the supplies with expiration in the vehicle
-
             # Clone the vehicle state for this edge
             tmp_vehicle = vehicle.copy()
             tmp_operations = [op.copy() for op in operations]
