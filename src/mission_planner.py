@@ -265,6 +265,7 @@ class MissionPlanner:
 
             # Destroy the nodes and update the graph
             for node in nodes_to_destroy:
+                print(f"[{str(time).rjust(3)}] Node {node} was destroyed.")
                 self.graph.destroy_node(node)
 
             # Check for destructive edges
@@ -276,7 +277,8 @@ class MissionPlanner:
 
             # Destroy the edges and update the graph
             for node1, node2 in edges_to_destroy:
-                self.graph.destroy_edge(node1, node2)
+                print(f"[{str(time).rjust(3)}] Edge ({node1}, {node2}) was destroyed.")
+                self.graph.destroy_edges(node1, node2)
 
             # If the graph was updated, recompute the accessible nodes by the vehicles as well
             # as the objective catastrophes for each vehicle
@@ -322,7 +324,7 @@ class MissionPlanner:
         try:
             user_input = input("Print the operations executed ordered by vehicle? [Y/n]: ")
         except (KeyboardInterrupt, EOFError):
-            print("\n")
+            user_input = "n"
 
         if user_input.lower() in {"", "y", "yes"}:
             operations_executed_by_vehicle = {}
