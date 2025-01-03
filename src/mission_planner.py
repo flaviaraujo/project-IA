@@ -82,26 +82,32 @@ class MissionPlanner:
     def get_vehicles_list(self):
         return sum(self.fleet.values(), [])
 
+    def get_search_algorithm(self, algorithm: str):
+        match algorithm:
+            case "bfs":
+                return bfs.search
+            case "dfs":
+                return dfs.search     # TODO
+            case "ucs":
+                return ucs.search     # TODO
+            case "greedy":
+                return greedy.search  # TODO
+            case "astar":
+                return astar.search   # TODO
+            case _:
+                raise ValueError(f"Invalid search algorithm: {algorithm}")
+
     ###
     # Search methods
     ###
     def planner(self, algorithm: str):
 
-        # Get the search algorithm function
-        search_algorithm = None
-        match algorithm:
-            case "bfs":
-                search_algorithm = bfs.search
-            case "dfs":
-                search_algorithm = dfs.search     # TODO
-            case "ucs":
-                search_algorithm = ucs.search     # TODO
-            case "greedy":
-                search_algorithm = greedy.search  # TODO
-            case "astar":
-                search_algorithm = astar.search   # TODO
-            case _:
-                raise ValueError(f"Invalid search algorithm: {algorithm}")
+        # Get the search algorithm
+        try:
+            search_algorithm = self.get_search_algorithm(algorithm)
+        except ValueError as e:
+            print(e)
+            return
 
         # Define the structure to store the vehicles that
         # can reach the catastrophes in time
@@ -113,7 +119,8 @@ class MissionPlanner:
 
             # Find the vehicles that can reach the catastrophe
             for vehicle_node, vehicles in self.fleet.items():
-                for vehicle in vehicles:
+
+                for vehicle in vehicles or []:
 
                     # Run the search algorithm
                     result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
@@ -151,8 +158,7 @@ class MissionPlanner:
         print(json.dumps(catastrophe_vehicles, indent=4))
 
         # Find the optimal objective for each vehicle
-        # Find the path for each vehicle (call the respective search algorithm)
-        #     Consider destructive nodes/edges
-        #     When a vehicle resolves a catastrophe, check if it can help in other catastrophes
-        #     (prioritize catastrophes without vehicles to help), if not return to base
+        # Execute the operations and update the vehicle's state by time order
+        # When a vehicle resolves a catastrophe find the next catastrophe to resolve
+        # Repeat until there are no more catastrophes to resolve or the time is over
         pass

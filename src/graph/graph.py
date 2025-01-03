@@ -18,6 +18,7 @@ from .node import Node
 from vehicle import convert_access_level_to_str
 
 from heapq import heappush, heappop
+import copy
 
 # Libraries for graphical representation
 import networkx as nx
@@ -49,6 +50,9 @@ class Graph:
 
     def __repr__(self):
         return str(self)
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     def print_edges(self):
         printed_edges = set()

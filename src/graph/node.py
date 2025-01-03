@@ -1,5 +1,7 @@
 from catastrophe import Catastrophe
 
+import copy
+
 
 class Node:
     def __init__(self,
@@ -36,6 +38,9 @@ class Node:
 
     def __hash__(self):
         return hash(self.name)
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     def serialize(self):
         return {
