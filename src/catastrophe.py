@@ -81,6 +81,15 @@ class Catastrophe:
 
         return cargo_supplied, remaining_cargo
 
+    def supply_amount(self, cargo_amounts: dict[str, int]) -> None:
+        # Decrements the catastrophe's demand
+        for supply_kind, demand in self.supplies_demand.copy().items():
+            if supply_kind in cargo_amounts:
+                provided = min(cargo_amounts[supply_kind], demand)
+                self.supplies_demand[supply_kind] -= provided
+                if self.supplies_demand[supply_kind] <= 0:
+                    del self.supplies_demand[supply_kind]
+
     def get_supplies_demand_amount(self):
         return sum(self.supplies_demand.values())
 
