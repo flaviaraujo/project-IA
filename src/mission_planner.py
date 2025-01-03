@@ -98,13 +98,13 @@ class MissionPlanner:
             case "bfs":
                 return bfs.search
             case "dfs":
-                return dfs.search     # TODO
+                return dfs.search
             case "ucs":
-                return ucs.search     # TODO
+                return ucs.search
             case "greedy":
-                return greedy.search  # TODO
+                return greedy.search
             case "astar":
-                return astar.search   # TODO
+                return astar.search
             case _:
                 raise ValueError(f"Invalid search algorithm: {algorithm}")
 
@@ -163,7 +163,7 @@ class MissionPlanner:
 
         return vehicles_operations
 
-    def planner(self, algorithm: str):
+    def planner(self, verbose: bool, algorithm: str):
 
         # Get the search algorithm
         try:
@@ -204,7 +204,7 @@ class MissionPlanner:
                         (vehicle, operations, fuel_consumption)
                     )
 
-        # Semi-serialize the catastrophe_vehicles structure to print it
+        # Semi-serialize the catastrophe_vehicles
         catastrophe_vehicles = {
             node: [
                 {
@@ -216,14 +216,17 @@ class MissionPlanner:
             ]
             for node, vehicles in catastrophe_vehicles.items()
         }
-        print("Catastrophe that can be reached in time by the vehicles:")
-        print(json.dumps(catastrophe_vehicles, indent=4))
+
+        if verbose:
+            print("Catastrophe that can be reached in time by the vehicles:")
+            print(json.dumps(catastrophe_vehicles, indent=4))
 
         # Find the optimal objective for each vehicle
         vehicles_operations = self.assign_optimal_objectives(catastrophe_vehicles, self.fleet)
 
-        print("\nVehicles elected for each catastrophe:")
-        print(json.dumps(vehicles_operations, indent=4))
+        if verbose:
+            print("\nVehicles elected for each catastrophe:")
+            print(json.dumps(vehicles_operations, indent=4))
 
         # Execute the operations and update the vehicle's state by time order
         # TODO
