@@ -8,6 +8,15 @@ from math import ceil
 import copy
 
 
+operation_order = {
+    "start": 0,
+    "move": 1,
+    "refuel": 2,
+    "drop": 3,
+    "load": 4
+}
+
+
 class Operation:
     def __init__(self,
                  time:           int,
