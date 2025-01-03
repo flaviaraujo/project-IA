@@ -179,7 +179,6 @@ class Vehicle:
             and self.has_enough_fuel(distance)
         )
 
-    # TODO pass speed multiplier as parameter
     # returns the time in minutes and the fuel consumed
     def travel(self, distance: int) -> (int, float):
         fuel_consumed = distance * self.fuel_consumption / 100
@@ -187,7 +186,7 @@ class Vehicle:
         fuel_consumed = ceil(fuel_consumed * 100) / 100
         self.tank -= fuel_consumed
         return (distance / self.speed) * 60, fuel_consumed  # time in minutes
-        # return (distance / self.speed * speed_mult) * 60, fuel_consumed  # time in minutes (TODO)
+        # return (distance / self.speed * speed_mult) * 60, fuel_consumed  # time in minutes
 
     ###
     # Cargo related methods
