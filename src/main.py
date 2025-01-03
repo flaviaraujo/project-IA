@@ -26,9 +26,9 @@ def display_change_simulation_menu(simulation_option) -> None:
         "\n"
         f"Currently selected: {simulation_option}\n"
         "Change to:\n"
-        "1 -> 1st Simulation\n"  # TODO add small simulation description
-        "2 -> 2nd Simulation\n"  # TODO add small simulation description
-        "3 -> 3rd Simulation\n"  # TODO add small simulation description
+        "1 -> Medium city with 10 nodes\n"
+        "2 -> Azores archipelago with 9 nodes\n"
+        "3 -> Simulation test\n"
         "0 -> Back"
     )
 
@@ -86,13 +86,13 @@ def display_main_menu(verbose) -> None:
     )
 
 
-def change_simulation_menu(mission_planner, simulation_option) -> None:
+def change_simulation_menu(mission_planner, heuristic_option, simulation_option):
     while True:
         display_change_simulation_menu(simulation_option)
         option = input_option()
         match option:
             case 0:
-                return mission_planner, simulation_option
+                return mission_planner, heuristic_option, simulation_option
             case 1:
                 simulation_option = 1
                 break
@@ -104,7 +104,11 @@ def change_simulation_menu(mission_planner, simulation_option) -> None:
                 break
             case _:
                 print("Invalid option")
-    return simulation_data.init_simulation(simulation_option), simulation_option
+
+    mission_planner, heuristic_option = \
+        simulation_data.init_simulation(simulation_option)
+
+    return (mission_planner, heuristic_option, simulation_option)
 
 
 def view_graph_menu(graph) -> None:
@@ -211,8 +215,8 @@ def main(verbose) -> None:
             case 0:
                 break
             case 1:
-                mission_planner, simulation_option = \
-                    change_simulation_menu(mission_planner, simulation_option)
+                mission_planner, heuristic_option, simulation_option = \
+                    change_simulation_menu(mission_planner, heuristic_option, simulation_option)
             case 2:
                 view_graph_menu(mission_planner.graph)
             case 3:
