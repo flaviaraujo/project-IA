@@ -1,6 +1,7 @@
 # The class Catastrophe is used to store the information of a catastrophe such as:
 # - time: sensitive time of response
 # - supplies_demand: dictionary with the supplies type and the amount needed
+# - accessible_vehicles: list of vehicles that can respond to the catastrophe
 
 from supply import Supply
 
@@ -11,12 +12,14 @@ class Catastrophe:
     def __init__(self, time, supplies_demand):
         self.time = time
         self.supplies_demand = supplies_demand
+        self.accessible_vehicles = []  # List of tuples (vehicle name, path, fuel consumption)
 
     def __str__(self):
         return (
             "{\n"
             f"  time_to_respond: {self.time},\n"
-            f"  supplies_demand: {self.supplies_demand}\n"
+            f"  supplies_demand: {self.supplies_demand},\n"
+            f"  accessible_vehicles: {self.accessible_vehicles}\n"
             "}"
         )
 
@@ -38,7 +41,8 @@ class Catastrophe:
     def serialize(self):
         return {
             "time_to_respond": self.time,
-            "supplies_demand": self.supplies_demand
+            "supplies_demand": self.supplies_demand,
+            "accessible_vehicles": self.accessible_vehicles
         }
 
     def decrease_time(self, time_passed):
