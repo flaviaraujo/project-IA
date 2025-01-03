@@ -374,47 +374,47 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                                starting_supplies)
 
             # Add the edges
-            graph.add_edge("A", "B", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("A", "B", 2, 1.00, "air", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "B", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "B", 20, 1.00, "air", MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("A", "C", 3, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("A", "C", 3, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "C", 30, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("A", "C", 30, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("B", "D", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "D", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "D", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "D", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("B", "E", 3, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("B", "E", 3, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "E", 30, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("B", "E", 30, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("C", "F", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("C", "F", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "F", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "F", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("C", "G", 1, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("C", "G", 1, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "G", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("C", "G", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("D", "H", 1, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("D", "H", 1, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("D", "H", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("D", "H", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("D", "I", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("D", "I", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("D", "I", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("D", "I", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("E", "J", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("E", "J", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("E", "J", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("E", "J", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("E", "K", 4, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("E", "K", 4, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("E", "K", 40, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("E", "K", 40, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("F", "L", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("F", "L", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "L", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "L", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("F", "M", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("F", "M", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "M", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("F", "M", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("G", "N", 2, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("G", "N", 2, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "N", 20, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "N", 20, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
-            graph.add_edge("G", "O", 1, 1.00, "land", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("G", "O", 1, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "O", 10, 1.00, "land", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("G", "O", 10, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
             heuristic_option = 2
