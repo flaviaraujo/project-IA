@@ -17,17 +17,19 @@ class Action:
         return str(self)
 
 
-    # Exemplo:
-    """
-    Criar uma ação para reabastecer
-    fuel_action = Action(action_type="fuel")
-
-    Criar uma ação para mover o veículo para o nó "B"
-    move_action = Action(action_type="move", target_node_id="B", distance_traveled=10, action_time=15)
-
-    Criar uma ação para entregar suprimentos
-    supply_action = Action(action_type="supply")
-    
-    Ação de espera
-    wait_action = Action(action_type="wait")
+    """ Exemplo:
+            Criar uma ação para reabastecer
+            fuel_action = Action(action_type="fuel")
+        
+            Criar uma ação para mover o veículo para o nó "B"
+            move_action = Action(action_type="move", target_node_id="B", distance_traveled=10, action_time=15)
+        
+            Criar uma ação para entregar suprimentos
+            supply_action = Action(action_type="supply")
+            
+            Criar uma ação de reeabastecer suprimentos
+            supply_action = Action(action_type="supply")
+            
+            Ação de espera
+            wait_action = Action(action_type="wait")
     """
