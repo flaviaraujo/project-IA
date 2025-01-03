@@ -57,15 +57,103 @@ def search(graph: Graph,
 
             # Update the vehicle's cargo contents
             vehicle.cargo_contents = remaining_cargo
+            vehicle.cargo = sum(s.amount for s in vehicle.cargo_contents)
 
-            # TODO: check if the catastrophe is fully resolved
-            # otherwise:
+            # Check if the catastrophe is fully resolved
+            # Otherwise:
             # 1. Go to neerest node
             # 2. Fuel if needed
             # 3. Load the supplies min(demand, cargo_capacity)
             # 4. Go to the catastrophe
             # 5. Drop the supplies
             # 6. Repeat until the catastrophe is resolved
+
+            # Find the nearest node to the catastrophe
+            neighbors = []
+            for prox, edge in graph.graph[node]:
+                _, _, e_travel_method, e_access_level = edge
+                if not vehicle.is_travel_possible(e_travel_method, e_access_level):
+                    continue
+
+                neighbors.append((prox, edge))
+
+            # If there are no neighbors the vehicle can't help the catastrophe
+            if not neighbors:
+                fuel_consumption = ceil(sum([op.fuel_consumed or 0 for op in operations]) * 100) / 100
+                return operations, fuel_consumption
+
+            nearest_node, edge = min(neighbors, key=lambda x: x[1][0])
+
+            # Unpack the nearest the edge from the neerest node to the catastrophe
+            e_distance, _, e_travel_method, e_access_level = edge
+
+            while not node.catastrophe.is_resolved():
+
+                if node.catastrophe.has_time_expired(current_time):
+                    break
+
+                tmp_vehicle = vehicle.copy()
+                tmp_operations = [op.copy() for op in operations]
+                tmp_current_time = current_time
+
+                # Travel to the nearest node
+                travel_time, fuel_used = tmp_vehicle.travel(e_distance)
+                start_time_travel = tmp_current_time
+                tmp_current_time += travel_time
+
+                if tmp_current_time >= response_time:
+                    break
+
+                travel_op = Operation(start_time_travel, "move", vehicle=vehicle.name,
+                                      node=nearest_node.name, fuel_consumed=fuel_used)
+                tmp_operations.append(travel_op)
+
+                # Refuel if necessary
+                if not tmp_vehicle.has_enough_fuel(e_distance):
+                    fuel_needed = tmp_vehicle.calculate_fuel_needed(e_distance)
+                    refuel_op = Operation(current_time, "refuel", vehicle=vehicle.name,
+                                          node=nearest_node.name, fuel=fuel_needed)
+
+                    _, refuel_time = tmp_vehicle.refuel(fuel_needed)
+                    tmp_current_time += refuel_time
+                    tmp_operations.append(refuel_op)
+
+                    if tmp_current_time >= response_time:
+                        break
+
+                # Load the supplies
+                supplies_loaded, _ = tmp_vehicle.load_supplies_for_catastrophe(node.catastrophe.supplies_demand)
+                load_op = Operation(current_time, "load", vehicle=vehicle.name,
+                                    node=nearest_node.name, supplies=supplies_loaded)
+                tmp_operations.append(load_op)
+
+                # Travel to the catastrophe
+                travel_time, fuel_used = tmp_vehicle.travel(e_distance)
+                start_time_travel = tmp_current_time
+                tmp_current_time += travel_time
+
+                if tmp_current_time >= response_time:
+                    break
+
+                travel_op = Operation(start_time_travel, "move", vehicle=vehicle.name,
+                                      node=node.name, fuel_consumed=fuel_used)
+                tmp_operations.append(travel_op)
+
+                # Drop the supplies
+                cargo_supplied, remaining_cargo = node.catastrophe.supply(tmp_vehicle.cargo_contents)
+
+                drop_op = Operation(current_time, "drop", vehicle=vehicle.name,
+                                    node=node.name, supplies=cargo_supplied)
+                tmp_operations.append(drop_op)
+
+                # Update the vehicle's cargo contents
+                tmp_vehicle.cargo_contents = remaining_cargo
+                tmp_vehicle.cargo = sum(s.amount for s in tmp_vehicle.cargo_contents)
+
+                # Update the state
+                vehicle = tmp_vehicle
+                operations = tmp_operations
+                current_time = tmp_current_time
 
             fuel_consumption = ceil(sum([op.fuel_consumed or 0 for op in operations]) * 100) / 100
             return operations, fuel_consumption
