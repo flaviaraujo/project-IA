@@ -89,6 +89,7 @@ class Vehicle:
         self.tank_capacity    = VEHICLE_SPECS[category][3]
         self.fuel_consumption = VEHICLE_SPECS[category][4]
         self.access_level     = VEHICLE_SPECS[category][5]
+        self.objective = None  # Attribute to store the assigned catastrophe
 
     def __str__(self):
         return (
@@ -280,3 +281,9 @@ class Vehicle:
         }
 
         return supplies_loaded, supplies_left
+    
+    def assign_objective(self, catastrophe):
+        self.objective = catastrophe
+
+    def clear_objective(self):
+        self.objective = None
