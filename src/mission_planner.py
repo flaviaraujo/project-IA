@@ -158,8 +158,7 @@ class MissionPlanner:
         print(json.dumps(catastrophe_vehicles, indent=4))
 
         # Find the optimal objective for each vehicle
-        # Find the path for each vehicle (call the respective search algorithm)
-        #     Consider destructive nodes/edges
-        #     When a vehicle resolves a catastrophe, check if it can help in other catastrophes
-        #     (prioritize catastrophes without vehicles to help), if not return to base
+        # Execute the operations and update the vehicle's state by time order
+        # When a vehicle resolves a catastrophe find the next catastrophe to resolve
+        # Repeat until there are no more catastrophes to resolve or the time is over
         pass
