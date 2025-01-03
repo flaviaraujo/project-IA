@@ -96,8 +96,6 @@ def search(graph: Graph,
 
             visited.add(prox.name)
 
-            print(f"Exploring node {prox.name}")
-
             # Ensure the vehicle has enough fuel
             if not tmp_vehicle.has_enough_fuel(e_distance):
                 # Refuel if necessary
@@ -131,7 +129,6 @@ def search(graph: Graph,
             current_time = tmp_current_time
 
             # Add the neighbor to the queue
-            print(f"Adding node {prox.name} to the queue, fuel used: {fuel_used}")
             travel_op = Operation(start_time_travel, "move", vehicle=tmp_vehicle.name,
                                   node=prox.name, fuel_consumed=fuel_used)
             queue.put((prox, tmp_operations + [travel_op], tmp_current_time))
