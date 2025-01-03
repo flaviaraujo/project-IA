@@ -80,3 +80,6 @@ class Catastrophe:
                 cargo_supplied[supply_kind] = provided
 
         return cargo_supplied, remaining_cargo
+
+    def get_supplies_demand_amount(self):
+        return sum(self.supplies_demand.values())
