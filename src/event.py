@@ -14,13 +14,13 @@ WATER_AMOUNT = 100
 SOSKIT_AMOUNT = 20
 
 
-def handle_catastrophe(time, node, catastrophe):
+def handle_catastrophe(time, node, map_graph: Graph, catastrophe):
     print(f"Time remaining for catastrophe on node {node['id']}: {catastrophe.time - time}")
 
     if catastrophe.time - time <= 0:
         if catastrophe.supplies_demand > 0:
+            map_graph.destructive_nodes.add(node)
             print(f"Catastrophe on node {node['id']} unresolved! Destroying node.")
-            node['destroyed'] = True
 
     else:
         vehicles = node.get("vehicles", [])
