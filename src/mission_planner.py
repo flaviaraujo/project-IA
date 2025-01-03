@@ -138,7 +138,7 @@ class MissionPlanner:
 
                     # Run the search algorithm
                     result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
-                                              vehicle_node, catastrophe_node)
+                                              vehicle_node, catastrophe_node, start_time=start_time)
 
                     # Check if the vehicle can not reach the catastrophe
                     if not result:
