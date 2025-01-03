@@ -1,6 +1,10 @@
 # The class Catastrophe is used to store the information of a catastrophe such as:
 # - time: sensitive time of response
-# - supplies_demand: dictionary with the supplies type and the amount needed (kg)
+# - supplies_demand: dictionary with the supplies type and the amount needed
+
+from supply import Supply
+
+import copy
 
 
 class Catastrophe:
@@ -28,6 +32,9 @@ class Catastrophe:
     def __hash__(self):
         return hash((self.time, self.supplies_demand))
 
+    def copy(self):
+        return copy.deepcopy(self)
+
     def serialize(self):
         return {
             "time_to_respond": self.time,
@@ -37,9 +44,39 @@ class Catastrophe:
     def decrease_time(self, time_passed):
         self.time -= time_passed
 
-    def supply(self, supplies):
-        for supply in supplies:
-            if supply in self.supplies_demand.keys():
-                self.supplies_demand[supply] -= supplies[supply]
-                if self.supplies_demand[supply] == 0:
-                    self.supplies_demand.pop(supply)
+    def supply(self, cargo_contents: dict[str, Supply]) -> (dict[str, int], dict[str, Supply]):
+        """
+        Provides the demanded supplies and returns the remaining supplies in the vehicle
+        and the amount of supplies provided to the catastrophe.
+
+        Args:
+        - cargo_contents (dict): A dictionary of the vehicle's supplies with their kinds as keys
+          and `Supply` objects as values.
+
+        Returns:
+        - tuple:
+            - dict: The updated cargo contents after fulfilling the demands.
+            - dict: The amount of each supply kind that was provided.
+        """
+        remaining_cargo = cargo_contents.copy()  # Clone the input cargo contents
+        cargo_supplied = {}  # Track what was supplied to the catastrophe
+
+        for supply_kind, demand in self.supplies_demand.copy().items():
+            if supply_kind in remaining_cargo:
+                supply = remaining_cargo[supply_kind]
+                provided = min(supply.amount, demand)
+
+                # Update the catastrophe's demand
+                self.supplies_demand[supply_kind] -= provided
+                if self.supplies_demand[supply_kind] <= 0:
+                    del self.supplies_demand[supply_kind]
+
+                # Update the vehicle's supply amount
+                supply.amount -= provided
+                if supply.amount <= 0:
+                    del remaining_cargo[supply_kind]
+
+                # Track what was supplied
+                cargo_supplied[supply_kind] = provided
+
+        return cargo_supplied, remaining_cargo
