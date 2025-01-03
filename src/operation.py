@@ -9,11 +9,11 @@ import copy
 
 
 operation_order = {
-    "start": 0,
-    "move": 1,
-    "refuel": 2,
-    "drop": 3,
-    "load": 4
+    "start":  0,
+    "refuel": 1,
+    "load":   2,
+    "drop":   3,
+    "move":   4
 }
 
 
@@ -21,6 +21,7 @@ class Operation:
     def __init__(self,
                  time:           int,
                  operation_type: str,
+                 duration:       int  = 0,
                  vehicle:        str  = None,
                  node:           str  = None,
                  fuel:           int  = None,
@@ -35,6 +36,7 @@ class Operation:
             )
 
         self.time = ceil(time)
+        self.duration = ceil(duration)
         self.operation_type = operation_type
         self.vehicle = vehicle
         self.node = node
