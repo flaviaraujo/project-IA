@@ -18,6 +18,7 @@ from algorithms  import (
 
 from operation import operation_order
 
+import copy
 import json
 
 
@@ -28,6 +29,7 @@ class MissionPlanner:
         self.catastrophes = catastrophes
         self.fleet = fleet
         self.supplies = supplies
+        self.backup = self.backup()
 
     def __str__(self):
         return (
@@ -52,6 +54,18 @@ class MissionPlanner:
 
     def __hash__(self):
         return hash((self.graph, self.catastrophes, self.fleet, self.supplies))
+
+    ###
+    # Object backup and restore methods
+    ###
+    def backup(self):
+        return copy.deepcopy(self)
+
+    def restore(self):
+        self.graph = self.backup.graph
+        self.catastrophes = self.backup.catastrophes
+        self.fleet = self.backup.fleet
+        self.supplies = self.backup.supplies
 
     ###
     # Serialize methods for pretty printing
@@ -111,6 +125,38 @@ class MissionPlanner:
     ###
     # Search methods
     ###
+    def build_catastrophe_vehicles(self, search_algorithm, start_time=0):
+        catastrophe_vehicles = {}
+
+        for catastrophe_node, catastrophe in self.catastrophes.items():
+            catastrophe_response_time = catastrophe.time
+
+            # Find the vehicles that can reach the catastrophe
+            for vehicle_node, vehicles in self.fleet.items():
+
+                for vehicle in vehicles or []:
+
+                    # Run the search algorithm
+                    result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
+                                              vehicle_node, catastrophe_node)
+
+                    # Check if the vehicle can not reach the catastrophe
+                    if not result:
+                        continue
+
+                    # Unwrap the search algorithm result tuple
+                    operations, fuel_consumption = result
+
+                    # Add the search algorithm result tuple with the vehicle
+                    if catastrophe_node not in catastrophe_vehicles:
+                        catastrophe_vehicles[catastrophe_node] = []
+
+                    catastrophe_vehicles[catastrophe_node].append(
+                        (vehicle, operations, fuel_consumption)
+                    )
+
+        return catastrophe_vehicles
+
     def assign_optimal_objectives(self, catastrophe_vehicles, fleet):
         # store the vehicles lsit operations to resolve the catastrophe
         vehicles_operations = {}
@@ -166,34 +212,7 @@ class MissionPlanner:
         # Define the structure to store the vehicles that
         # can reach the catastrophes in time
         # (Key: Catastrophe node, Value: (Vehicle, Operations, Fuel consumption))
-        catastrophe_vehicles = {}
-
-        for catastrophe_node, catastrophe in self.catastrophes.items():
-            catastrophe_response_time = catastrophe.time
-
-            # Find the vehicles that can reach the catastrophe
-            for vehicle_node, vehicles in self.fleet.items():
-
-                for vehicle in vehicles or []:
-
-                    # Run the search algorithm
-                    result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
-                                              vehicle_node, catastrophe_node)
-
-                    # Check if the vehicle can not reach the catastrophe
-                    if not result:
-                        continue
-
-                    # Unwrap the search algorithm result tuple
-                    operations, fuel_consumption = result
-
-                    # Add the search algorithm result tuple with the vehicle
-                    if catastrophe_node not in catastrophe_vehicles:
-                        catastrophe_vehicles[catastrophe_node] = []
-
-                    catastrophe_vehicles[catastrophe_node].append(
-                        (vehicle, operations, fuel_consumption)
-                    )
+        catastrophe_vehicles = self.build_catastrophe_vehicles(search_algorithm)
 
         if verbose:
             # Semi-serialize the catastrophe_vehicles
@@ -228,15 +247,96 @@ class MissionPlanner:
             print("\nVehicles elected for each catastrophe:")
             print(json.dumps(vehicles_operations_serialized, indent=4))
 
-        # Execute the operations and update the vehicle's state by time order
+        # Get and sort the operations by time and in case of tie by the operation type order
         operations = sum((v["operations"] for v in vehicles_operations.values()), [])
-
-        # sort the operations by time and in case of tie by the operation type
-        # in the following order: start, move, refuel, drop, load
         operations = sorted(operations, key=lambda x: (x.time, operation_order[x.operation_type]))
 
+        # Execute the operations by time oreder and update the state
+        # Checks for destructive nodes and edges and updates the graph
         # TODO execute the operations and update the state
-        #   When a vehicle resolves a catastrophe find the next catastrophe to resolve
-        #   Repeat until there are no more catastrophes to resolve or the time is over
-        #   TODO
-        pass
+        time = 0
+        operations_executed = []
+        while True:
+            # Check for destructive nodes
+            nodes_to_destroy = [
+                node
+                for node, destruction_time in self.graph.destructive_nodes.items()
+                if destruction_time == time
+            ]
+
+            # Destroy the nodes and update the graph
+            for node in nodes_to_destroy:
+                self.graph.destroy_node(node)
+
+            # Check for destructive edges
+            edges_to_destroy = [
+                (node1, node2)
+                for (node1, node2), destruction_time in self.graph.destructive_edges.items()
+                if destruction_time == time
+            ]
+
+            # Destroy the edges and update the graph
+            for node1, node2 in edges_to_destroy:
+                self.graph.destroy_edge(node1, node2)
+
+            # If the graph was updated, recompute the accessible nodes by the vehicles as well
+            # as the objective catastrophes for each vehicle
+            if nodes_to_destroy or edges_to_destroy:
+                # Rebuild the catastrophe_vehicles
+                catastrophe_vehicles = \
+                    self.build_catastrophe_vehicles(search_algorithm, time)
+
+                # Find the optimal objective for each vehicle
+                vehicles_operations = \
+                    self.assign_optimal_objectives(catastrophe_vehicles, self.fleet)
+
+                # Get and sort the operations by time and in case of tie by the operation type order
+                operations = sum((v["operations"] for v in vehicles_operations.values()), [])
+                operations = sorted(operations, key=lambda x: (x.time, operation_order[x.operation_type]))
+
+            # Get the operations that should be executed
+            current_operations = [op for op in operations if op.time == time]
+
+            # Execute the operations
+            # TODO Update the state by executing the operations
+            for operation in current_operations:
+                print(operation)
+                operations_executed.append(operation)
+                # TODO
+                # When a vehicle resolves a catastrophe find the next catastrophe to resolve
+                # Repeat until there are no more catastrophes to resolve or the time is over
+
+            # Check if all catastrophes were resolved
+            if all(c.is_resolved() for c in self.catastrophes.values()):
+                print(f"[{str(time).rjust(3)}] All catastrophes were resolved.")
+                break
+
+            # Check if the time to response to all catastrophes is over
+            if all(c.has_time_expired(time) for c in self.catastrophes.values()):
+                print(f"[{str(time).rjust(3)}] Time to response to all catastrophes is over.")
+                break
+
+            # Increment the time
+            time += 1
+
+        # Print the operations executed ordered by vehicle instead of time if the user wants it
+        try:
+            user_input = input("Print the operations executed ordered by vehicle? [Y/n]: ")
+        except (KeyboardInterrupt, EOFError):
+            print("\n")
+
+        if user_input.lower() in {"", "y", "yes"}:
+            operations_executed_by_vehicle = {}
+            for operation in operations_executed:
+                if operation.vehicle not in operations_executed_by_vehicle:
+                    operations_executed_by_vehicle[operation.vehicle] = []
+
+                operations_executed_by_vehicle[operation.vehicle].append(operation)
+
+            for vehicle, operations in operations_executed_by_vehicle.items():
+                print(f"\nVehicle {vehicle} operations:")
+                for operation in operations:
+                    print(operation)
+
+        # Restore mission planner state after running the planner/simulator
+        self.restore()
