@@ -65,10 +65,10 @@ class Event:
     def handle_vehicle(self, node, map_graph: Graph, vehicle):
         print(f"Vehicle {vehicle.name} is on node {node['id']}.")
 
-        if vehicle.action == "wait":
+        if vehicle.action.action_type == "wait":
             print(f"{vehicle.name} is waiting on node {node['id']}.")
 
-        elif vehicle.action == "supply":
+        elif vehicle.action.action_type == "supply":
             for supply, amount in vehicle.cargo_contents.items():
                 if supply in node['supplies']:
                     node['supplies'][supply].amount += amount
@@ -78,7 +78,7 @@ class Event:
             vehicle.cargo = 0
             print(f"{vehicle.name} has delivered supplies on node {node['id']}.")
 
-        elif vehicle.action == "fuel":
+        elif vehicle.action.action_type == "fuel":
             if "fuel" in node['supplies']:
                 fuel_available = node['supplies']['fuel'].amount
                 fuel_needed = vehicle.tank_capacity - vehicle.tank
