@@ -159,7 +159,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             ###
 
             catastrophes = {
-                "São Miguel":  Catastrophe(500, {"food": 200, "water": 100}),
+                "Sao Miguel":  Catastrophe(500, {"food": 200, "water": 100}),
                 "Santa Maria": Catastrophe(400, {"medicine": 150, "water": 200}),
                 "Faial":       Catastrophe(300, {"food": 100, "soskit": 50}),
                 "Pico":        Catastrophe(600, {"water": 400, "medicine": 300}),
@@ -191,7 +191,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                     "water":    Supply("water",    800),
                     "soskit":   Supply("soskit",   100),
                 },
-                "São Jorge": {
+                "Sao Jorge": {
                     "medicine": Supply("medicine", 300, perishable_time=600),
                     "water":    Supply("water",    500),
                 },
@@ -209,7 +209,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
 
             # Add the islands (nodes)
             for node, fuel in [
-                ("São Miguel",  50),
+                ("Sao Miguel",  50),
                 ("Santa Maria", 40),
                 ("Faial",       30),
                 ("Pico",        60),
@@ -217,7 +217,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 ("Corvo",       50),
                 ("Terceira",    30),
                 ("Graciosa",    40),
-                ("São Jorge",   25)
+                ("Sao Jorge",   25)
             ]:
                 catastrophe = catastrophes.get(node, None)
                 vehicles = fleet.get(node, [])
@@ -229,11 +229,11 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                                starting_supplies)
 
             # Add the edges
-            graph.add_edge("São Miguel",  "Santa Maria",   81, 0.75, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("São Miguel",  "Santa Maria",   81, 0.60, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Santa Maria",   81, 0.75, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Santa Maria",   81, 0.60, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("São Miguel",  "Terceira",     144, 0.75, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("São Miguel",  "Terceira",     144, 0.60, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Terceira",     144, 0.75, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Terceira",     144, 0.60, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Santa Maria", "Terceira",     175, 0.80, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Santa Maria", "Terceira",     175, 0.65, "air",   LOW_ACCESS_LEVEL)
@@ -241,41 +241,41 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             graph.add_edge("Terceira",    "Graciosa",      81, 0.85, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Terceira",    "Graciosa",      81, 0.70, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("Graciosa",    "São Jorge",     42, 0.85, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("Graciosa",    "São Jorge",     42, 0.75, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Graciosa",    "Sao Jorge",     42, 0.85, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Graciosa",    "Sao Jorge",     42, 0.75, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Faial",       "Pico",           8, 0.85, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Faial",       "Pico",           8, 0.65, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("São Jorge",   "Faial",         56, 0.75, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("São Jorge",   "Faial",         56, 0.60, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Sao Jorge",   "Faial",         56, 0.75, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Sao Jorge",   "Faial",         56, 0.60, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Flores",      "Corvo",         23, 0.80, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Flores",      "Corvo",         23, 0.75, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("Pico",        "São Jorge",     58, 0.85, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("Pico",        "São Jorge",     58, 0.70, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Pico",        "Sao Jorge",     58, 0.85, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Pico",        "Sao Jorge",     58, 0.70, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Flores",      "Faial",        240, 0.85, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Flores",      "Faial",        240, 0.70, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("Flores",      "São Jorge",    260, 0.90, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("Flores",      "São Jorge",    260, 0.70, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Flores",      "Sao Jorge",    260, 0.90, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Flores",      "Sao Jorge",    260, 0.70, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Corvo",       "Faial",        230, 0.85, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Corvo",       "Faial",        230, 0.70, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("Corvo",       "São Miguel",   350, 0.85, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("Corvo",       "São Miguel",   350, 0.65, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Corvo",       "Sao Miguel",   350, 0.85, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Corvo",       "Sao Miguel",   350, 0.65, "air",   LOW_ACCESS_LEVEL)
 
             graph.add_edge("Pico",        "Terceira",     120, 0.80, "water", MEDIUM_ACCESS_LEVEL)
             graph.add_edge("Pico",        "Terceira",     120, 0.65, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("Santa Maria", "São Jorge",    190, 0.85, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("Santa Maria", "São Jorge",    190, 0.70, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Santa Maria", "Sao Jorge",    190, 0.85, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Santa Maria", "Sao Jorge",    190, 0.70, "air",   LOW_ACCESS_LEVEL)
 
-            graph.add_edge("São Miguel",  "Faial",        180, 0.85, "water", MEDIUM_ACCESS_LEVEL)
-            graph.add_edge("São Miguel",  "Faial",        180, 0.70, "air",   LOW_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Faial",        180, 0.85, "water", MEDIUM_ACCESS_LEVEL)
+            graph.add_edge("Sao Miguel",  "Faial",        180, 0.70, "air",   LOW_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
             heuristic_option = 3
@@ -294,9 +294,9 @@ def init_simulation(option: int) -> (MissionPlanner, int):
 
             # Create destructible edges conditions
             destructible_edges = {
-                ("São Miguel", "Santa Maria"): 350,
+                ("Sao Miguel", "Santa Maria"): 350,
                 ("Flores", "Faial"): 200,
-                ("Graciosa", "São Jorge"): 250,
+                ("Graciosa", "Sao Jorge"): 250,
             }
             graph.destructible_edges = destructible_edges
 
