@@ -8,6 +8,7 @@
 # - supplies:     dictionary of supplies     where the key is the node name
 
 from graph.graph import Graph
+from operation   import Operation
 from algorithms  import (
     bfs,
     dfs,
@@ -100,7 +101,6 @@ class MissionPlanner:
     def get_vehicles_list(self):
         return sum(self.fleet.values(), [])
 
-    # Currently not used
     def get_vehicle(self, vehicle_name: str):
         for vehicle in sum(self.fleet.values(), []):
             if vehicle.name == vehicle_name:
@@ -253,7 +253,6 @@ class MissionPlanner:
 
         # Execute the operations by time oreder and update the state
         # Checks for destructive nodes and edges and updates the graph
-        # TODO execute the operations and update the state
         time = 0
         operations_executed = []
         while True:
@@ -298,9 +297,9 @@ class MissionPlanner:
             current_operations = [op for op in operations if op.time == time]
 
             # Execute the operations
-            # TODO Update the state by executing the operations
             for operation in current_operations:
                 print(operation)
+                self.execute(operation)
                 operations_executed.append(operation)
                 # TODO
                 # When a vehicle resolves a catastrophe find the next catastrophe to resolve
@@ -340,3 +339,51 @@ class MissionPlanner:
 
         # Restore mission planner state after running the planner/simulator
         self.restore()
+
+    def execute(self, operation: Operation):
+        # Get the vehicle from the fleet
+        vehicle = self.get_vehicle(operation.vehicle) or None
+
+        # Execute the operation based on its type
+        match operation.operation_type:
+            case "start":
+                # Skip the start operation
+                pass
+
+            case "move":
+                # Update vehicle fuel tank
+                vehicle.tank -= operation.fuel_consumed
+
+                # Remove the vehicle from the fleet
+                for node, vehicles in self.fleet.items():
+                    if vehicle in vehicles:
+                        vehicles.remove(vehicle)
+                        break
+
+                # Add the vehicle to the new node
+                if operation.node not in self.fleet:
+                    self.fleet[operation.node] = []
+                self.fleet[operation.node].append(vehicle)
+
+            case "refuel":
+                # Refuel the vehicle
+                vehicle.refuel(operation.fuel)
+
+            case "load":
+                # NOTE the nodes are assumed to have infinite supplies
+                # and as the vehicle will never supply in a catastrophe node
+                # vehicle.cargo_contents = operation.supplies
+                pass
+
+            case "drop":
+                # Get the catastrophe
+                catastrophe = self.catastrophes[operation.node]
+
+                # The catastrophe supplies are provided by the vehicle
+                catastrophe.supply_amount(operation.supplies)
+                # vehicle.cargo_contents = vehicle_cargo_contents
+
+                if catastrophe.is_resolved():
+                    print(f"Catastrophe at node {operation.node} was resolved.")
+            case _:
+                raise ValueError(f"Invalid operation type: {operation.operation_type}")
