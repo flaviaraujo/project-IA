@@ -3,6 +3,11 @@
 # - amount: amount of supply
 # - perishable_time: time that the supply will last (if it is perishable)
 
+import copy
+
+perishable_kinds = {"food": True, "water": False, "sos_kit": False}
+
+
 class Supply:
     def __init__(self, kind: str, amount: int, perishable_time: int = None):
         self.kind = kind
@@ -28,6 +33,9 @@ class Supply:
 
     def __hash__(self):
         return hash((self.kind, self.amount, self.perishable_time))
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     def serialize(self):
         return {
