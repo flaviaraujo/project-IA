@@ -134,20 +134,20 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 "vehicles": sum(fleet.values(), [])
             })
 
-            # Create destructible nodes conditions
-            destructible_nodes = {
+            # Create destructive nodes conditions
+            destructive_nodes = {
                 "C": 300,
                 "G": 400
             }
-            graph.destructible_nodes = destructible_nodes
+            graph.destructive_nodes = destructive_nodes
 
-            # Create destructible edges conditions
-            destructible_edges = {
+            # Create destructive edges conditions
+            destructive_edges = {
                 ("A", "D"): 350,
                 ("E", "H"): 250,
                 ("F", "I"): 200
             }
-            graph.destructible_edges = destructible_edges
+            graph.destructive_edges = destructive_edges
 
             # Return the MissionPlanner object
             return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
@@ -164,7 +164,6 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 "Santa Maria": Catastrophe(400, {"medicine": 150, "water": 200}),
                 "Faial":       Catastrophe(300, {"food": 100, "soskit": 50}),
                 "Pico":        Catastrophe(600, {"water": 400, "medicine": 300}),
-                "Flores":      Catastrophe(200, {"soskit": 30, "food": 150}),
             }
 
             ###
@@ -287,20 +286,20 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 "vehicles": sum(fleet.values(), [])
             })
 
-            # Create destructible nodes conditions
-            destructible_nodes = {
-                "Santa Maria": 300,
-                "Flores": 400,
+            # Create destructive nodes conditions
+            destructive_nodes = {
+                "Santa Maria": 400,
+                "Flores": 100,
+                # "Terceira": 0
             }
-            graph.destructible_nodes = destructible_nodes
+            graph.destructive_nodes = destructive_nodes
 
-            # Create destructible edges conditions
-            destructible_edges = {
-                ("Sao Miguel", "Santa Maria"): 350,
+            # Create destructive edges conditions
+            destructive_edges = {
                 ("Flores", "Faial"): 200,
                 ("Graciosa", "Sao Jorge"): 250,
             }
-            graph.destructible_edges = destructible_edges
+            graph.destructive_edges = destructive_edges
 
             # Return the MissionPlanner object
             return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
@@ -443,11 +442,11 @@ def init_simulation(option: int) -> (MissionPlanner, int):
                 "vehicles":     sum(fleet.values(), [])
             })
 
-            # No destructible nodes
-            graph.destructible_nodes = {}
+            # No destructive nodes
+            graph.destructive_nodes = {}
 
-            # No destructible edges
-            graph.destructible_edges = {}
+            # No destructive edges
+            graph.destructive_edges = {}
 
             # return the MissionPlanner object
             return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
