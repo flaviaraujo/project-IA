@@ -58,21 +58,22 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             # Create the supplies
             ###
 
+            # NOTE Currently assuming that the supplies are infinite
             supplies = {
-                "A": {
-                    "food":     Supply("food",      500, perishable_time=600),
-                    "water":    Supply("water",    1000),
-                    "soskit":   Supply("soskit",    100)
-                },
-                "D": {
-                    "medicine": Supply("medicine",  200, perishable_time=500),
-                    "water":    Supply("water",     300),
-                },
-                "H": {
-                    "food":     Supply("food",      600, perishable_time=400),
-                    "water":    Supply("water",     500),
-                    "medicine": Supply("medicine",  300)
-                }
+                # "A": {
+                #     "food":     Supply("food",      500, perishable_time=600),
+                #     "water":    Supply("water",    1000),
+                #     "soskit":   Supply("soskit",    100)
+                # },
+                # "D": {
+                #     "medicine": Supply("medicine",  200, perishable_time=500),
+                #     "water":    Supply("water",     300),
+                # },
+                # "H": {
+                #     "food":     Supply("food",      600, perishable_time=400),
+                #     "water":    Supply("water",     500),
+                #     "medicine": Supply("medicine",  300)
+                # }
             }
 
             ###
@@ -185,20 +186,21 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             # Create the supplies
             ###
 
+            # NOTE Currently assuming that the supplies are infinite
             supplies = {
-                "Terceira": {
-                    "food":     Supply("food",     400, perishable_time=500),
-                    "water":    Supply("water",    800),
-                    "soskit":   Supply("soskit",   100),
-                },
-                "Sao Jorge": {
-                    "medicine": Supply("medicine", 300, perishable_time=600),
-                    "water":    Supply("water",    500),
-                },
-                "Corvo": {
-                    "food":     Supply("food",     600, perishable_time=400),
-                    "water":    Supply("water",    700),
-                }
+                # "Terceira": {
+                #     "food":     Supply("food",     400, perishable_time=500),
+                #     "water":    Supply("water",    800),
+                #     "soskit":   Supply("soskit",   100),
+                # },
+                # "Sao Jorge": {
+                #     "medicine": Supply("medicine", 300, perishable_time=600),
+                #     "water":    Supply("water",    500),
+                # },
+                # "Corvo": {
+                #     "food":     Supply("food",     600, perishable_time=400),
+                #     "water":    Supply("water",    700),
+                # }
             }
 
             ###
@@ -332,12 +334,13 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             # Create the supplies
             ###
 
+            # NOTE Currently assuming that the supplies are infinite
             supplies = {
-                "A": {
-                    "food":   Supply("food",    600, perishable_time=600),
-                    "water":  Supply("water",  1000),
-                    "soskit": Supply("soskit",  100)
-                }
+                # "A": {
+                #     "food":   Supply("food",    600, perishable_time=600),
+                #     "water":  Supply("water",  1000),
+                #     "soskit": Supply("soskit",  100)
+                # }
             }
 
             ###
