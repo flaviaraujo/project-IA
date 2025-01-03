@@ -149,8 +149,3 @@ def calculate_travel_time_and_fuel(graph, start_node, end_node, vehicle):
                 heappush(priority_queue, (new_distance, new_fuel, neighbor, path))
 
     return float('inf'), float('inf'), []
-
-def update_catastrophe_data(graph, catastrophes, vehicles):
-    for node in graph.nodes:
-        if node.catastrophe:
-            node.catastrophe.accessible_vehicles = find_vehicles_for_catastrophe(graph, node, vehicles, node.catastrophe.time)
