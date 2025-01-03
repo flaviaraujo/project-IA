@@ -114,10 +114,16 @@ class Graph:
         if not self.directed:
             self.graph[node2].append((node1, edge_info))
 
-    def remove_edge(self, node1, node2, travel_method):
+    def destroy_node(self, node):
+        # Remove the node from the list of nodes
+        self.nodes.remove(node)
+        # Remove all edges that contain the node
+        del self.graph[node]
+
+    def destroy_edges(self, node1, node2):
         a = self.graph[node1]
         for (node1, edge_info) in a:
-            if node1 == node2 and edge_info[2] == travel_method:
+            if node1 == node2:
                 a.remove((node1, edge_info))
                 return
 
@@ -125,7 +131,7 @@ class Graph:
         if not self.directed:
             a = self.graph[node2]
             for (node2, edge_info) in a:
-                if node2 == node1 and edge_info[2] == travel_method:
+                if node2 == node1:
                     a.remove((node2, edge_info))
                     return
 
