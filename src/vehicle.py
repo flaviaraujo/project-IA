@@ -16,8 +16,9 @@ import copy
 # - tank_capacity    : float (l)
 # - fuel_consumption : float (l/100km)
 # - access_level     : int   (level of access to certain terrains)
-# - objective        : Catastrophe (catastrophe to attend)
+# - objective        : str   (name of the node of the catastrophe)
 # - will_resolve     : bool  (will the vehicle resolve the catastrophe in the next trip)
+# - operations       : list[Operation] (list of operations to be executed by the vehicle)
 
 ###
 # Constants
@@ -93,6 +94,7 @@ class Vehicle:
         self.access_level     = VEHICLE_SPECS[category][5]
         self.objective        = None
         self.will_resolve     = False
+        self.operations       = []
 
     def __str__(self):
         return (
@@ -107,6 +109,9 @@ class Vehicle:
             f"  tank: {self.tank}, "
             f"  tank_capacity: {self.tank_capacity}, "
             f"  fuel_consumption: {self.fuel_consumption}, "
+            f"  access_level: {convert_access_level_to_str(self.access_level)}, "
+            f"  objective: {self.objective}, "
+            f"  will_resolve: {self.will_resolve}"
             "}"
         )
 
@@ -134,6 +139,9 @@ class Vehicle:
             "tank": self.tank,
             "tank_capacity": self.tank_capacity,
             "fuel_consumption": self.fuel_consumption,
+            "access_level": self.access_level,
+            "objective": self.objective,
+            "will_resolve": self.will_resolve,
         }
 
     ###
