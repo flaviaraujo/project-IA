@@ -16,8 +16,7 @@ class Catastrophe:
         return (
             "{\n"
             f"  time_to_respond: {self.time},\n"
-            f"  supplies_demand: {self.supplies_demand},\n"
-            f"  accessible_vehicles: {self.accessible_vehicles}\n"
+            f"  supplies_demand: {self.supplies_demand}\n"
             "}"
         )
 
@@ -40,7 +39,6 @@ class Catastrophe:
         return {
             "time_to_respond": self.time,
             "supplies_demand": self.supplies_demand,
-            "accessible_vehicles": self.accessible_vehicles
         }
 
     def decrease_time(self, time_passed):
@@ -82,13 +80,3 @@ class Catastrophe:
                 cargo_supplied[supply_kind] = provided
 
         return cargo_supplied, remaining_cargo
-
-    def assign_vehicle_to_catastrophe(self):
-        # Sort accessible vehicles by fuel consumption
-        self.accessible_vehicles.sort(key=lambda v: v[2])
-
-        if self.accessible_vehicles:
-            # Get the vehicle with the least fuel consumption
-            best_vehicle_name, path, fuel_consumption = self.accessible_vehicles[0]
-            if best_vehicle_name:
-                best_vehicle_name.assign_objective(self)
