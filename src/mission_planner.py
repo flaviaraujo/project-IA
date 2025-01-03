@@ -113,7 +113,8 @@ class MissionPlanner:
 
             # Find the vehicles that can reach the catastrophe
             for vehicle_node, vehicles in self.fleet.items():
-                for vehicle in vehicles:
+
+                for vehicle in vehicles or []:
 
                     # Run the search algorithm
                     result = search_algorithm(self.graph, vehicle, catastrophe_response_time,
