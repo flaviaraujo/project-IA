@@ -78,6 +78,25 @@ class Event:
             vehicle.cargo = 0
             print(f"{vehicle.name} has delivered supplies on node {node['id']}.")
 
+
+        elif vehicle.action.action_type == "restock":
+            total_cargo_space = vehicle.cargo_capacity - vehicle.cargo
+            for supply_name, supply in node['supplies'].items():
+                if total_cargo_space <= 0:
+                    break
+                amount_to_load = min(supply.amount, total_cargo_space)
+                if supply_name in vehicle.cargo_contents:
+                    vehicle.cargo_contents[supply_name] += amount_to_load
+
+                else:
+                    vehicle.cargo_contents[supply_name] = amount_to_load
+                supply.amount -= amount_to_load
+                vehicle.cargo += amount_to_load
+                total_cargo_space -= amount_to_load
+            print(
+                f"{vehicle.name} has restocked supplies on node {node['id']}. Current cargo: {vehicle.cargo_contents}")
+
+
         elif vehicle.action.action_type == "fuel":
             if "fuel" in node['supplies']:
                 fuel_available = node['supplies']['fuel'].amount
@@ -107,7 +126,7 @@ class Event:
             node.fuel += REFUEL_AMOUNT
 
 
-    def handle_supply(self, node, supply):
+    def handle_supply(self, supply):
         if self.time % SUPPLY_REFILL_RATE == 0:
             if supply == "food":
                 supply.amount += FOOD_AMOUNT
