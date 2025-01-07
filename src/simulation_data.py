@@ -17,7 +17,7 @@ from graph.heurisitics import (
 )
 
 
-def init_simulation(option: int) -> (MissionPlanner, int):
+def init_simulation(option: int, heuristic_option: int) -> MissionPlanner:
     match option:
         case 1:
             # Description: city with 10 nodes
@@ -127,12 +127,25 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             graph.add_edge("I", "J", 35, 0.80, "land",  MEDIUM_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
-            heuristic_option = 1
-            heuristic_fn1({
-                "graph": graph,
-                "catastrophes": catastrophes,
-                "vehicles": sum(fleet.values(), [])
-            })
+            match heuristic_option:
+                case 1:
+                    heuristic_fn1({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case 2:
+                    heuristic_fn2({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case _:
+                    heuristic_fn3({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
 
             # Create destructive nodes conditions
             destructive_nodes = {
@@ -150,7 +163,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             graph.destructive_edges = destructive_edges
 
             # Return the MissionPlanner object
-            return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
+            return MissionPlanner(graph, catastrophes, fleet, supplies)
 
         case 2:
             # Description: Azores archipelago with 9 islands
@@ -172,12 +185,12 @@ def init_simulation(option: int) -> (MissionPlanner, int):
 
             fleet = {
                 "Terceira": [
-                    Vehicle("Boat1", "small_boat"),
-                    Vehicle("Boat2", "medium_boat"),
+                    Vehicle("Helicopter1", "helicopter"),
                 ],
                 "Graciosa": [
+                    Vehicle("Helicopter2", "helicopter"),
                     Vehicle("Airplane1", "airplane"),
-                    Vehicle("Helicopter1", "helicopter"),
+                    Vehicle("Boat1", "medium_boat"),
                 ]
             }
 
@@ -279,30 +292,41 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             graph.add_edge("Sao Miguel",  "Faial",        180, 0.70, "air",   LOW_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
-            heuristic_option = 3
-            heuristic_fn3({
-                "graph": graph,
-                "catastrophes": catastrophes,
-                "vehicles": sum(fleet.values(), [])
-            })
+            match heuristic_option:
+                case 1:
+                    heuristic_fn1({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case 2:
+                    heuristic_fn2({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case _:
+                    heuristic_fn3({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
 
             # Create destructive nodes conditions
             destructive_nodes = {
                 "Santa Maria": 400,
-                "Flores": 100,
-                # "Terceira": 0
+                "Flores": 200,
             }
             graph.destructive_nodes = destructive_nodes
 
             # Create destructive edges conditions
             destructive_edges = {
-                ("Flores", "Faial"): 200,
-                ("Graciosa", "Sao Jorge"): 250,
+                ("Flores", "Faial"): 100
             }
             graph.destructive_edges = destructive_edges
 
             # Return the MissionPlanner object
-            return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
+            return MissionPlanner(graph, catastrophes, fleet, supplies)
 
         case 3:
             # Description: Test simulation with 15 nodes
@@ -435,12 +459,25 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             # graph.add_edge("M", "O",  5, 1.00, "air",  MEDIUM_ACCESS_LEVEL)
 
             # Add heuristics values to nodes
-            heuristic_option = 2
-            heuristic_fn2({
-                "graph":        graph,
-                "catastrophes": catastrophes,
-                "vehicles":     sum(fleet.values(), [])
-            })
+            match heuristic_option:
+                case 1:
+                    heuristic_fn1({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case 2:
+                    heuristic_fn2({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
+                case _:
+                    heuristic_fn3({
+                        "graph": graph,
+                        "catastrophes": catastrophes,
+                        "vehicles": sum(fleet.values(), [])
+                    })
 
             # No destructive nodes
             graph.destructive_nodes = {}
@@ -449,7 +486,7 @@ def init_simulation(option: int) -> (MissionPlanner, int):
             graph.destructive_edges = {}
 
             # return the MissionPlanner object
-            return MissionPlanner(graph, catastrophes, fleet, supplies), heuristic_option
+            return MissionPlanner(graph, catastrophes, fleet, supplies)
 
         case _:
             raise ValueError("Invalid option")

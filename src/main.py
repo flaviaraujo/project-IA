@@ -92,7 +92,7 @@ def change_simulation_menu(mission_planner, heuristic_option, simulation_option)
         option = input_option()
         match option:
             case 0:
-                return mission_planner, heuristic_option, simulation_option
+                return mission_planner, simulation_option
             case 1:
                 simulation_option = 1
                 break
@@ -105,10 +105,9 @@ def change_simulation_menu(mission_planner, heuristic_option, simulation_option)
             case _:
                 print("Invalid option")
 
-    mission_planner, heuristic_option = \
-        simulation_data.init_simulation(simulation_option)
+    mission_planner = simulation_data.init_simulation(simulation_option, heuristic_option)
 
-    return (mission_planner, heuristic_option, simulation_option)
+    return (mission_planner, simulation_option)
 
 
 def view_graph_menu(graph) -> None:
@@ -136,7 +135,7 @@ def view_graph_menu(graph) -> None:
     pass
 
 
-def search_menu(mission_planner, heuristic_option, verbose) -> None:
+def search_menu(mission_planner, simulation_option, heuristic_option, verbose) -> int:
     while True:
         display_search_menu()
         option = input_option()
@@ -144,19 +143,21 @@ def search_menu(mission_planner, heuristic_option, verbose) -> None:
             case 0:
                 break
             case 1:
-                mission_planner.planner(verbose, "bfs")
+                mission_planner.planner(simulation_option, heuristic_option, "bfs",    verbose)
             case 2:
-                mission_planner.planner(verbose, "dfs")
+                mission_planner.planner(simulation_option, heuristic_option, "dfs",    verbose)
             case 3:
-                mission_planner.planner(verbose, "ucs")
+                mission_planner.planner(simulation_option, heuristic_option, "ucs",    verbose)
             case 4:
-                mission_planner.planner(verbose, "greedy")
+                mission_planner.planner(simulation_option, heuristic_option, "greedy", verbose)
             case 5:
-                mission_planner.planner(verbose, "astar")
+                mission_planner.planner(simulation_option, heuristic_option, "astar",  verbose)
             case 9:
                 heuristic_option = change_heuristic_menu(heuristic_option, mission_planner)
             case _:
                 print("Invalid option")
+
+    return heuristic_option
 
 
 def change_heuristic_menu(heuristic_option, mission_planner) -> int:
@@ -198,8 +199,9 @@ def change_heuristic_menu(heuristic_option, mission_planner) -> int:
 
 def main(verbose) -> None:
     simulation_option = 1
-    mission_planner, heuristic_option = \
-        simulation_data.init_simulation(simulation_option)
+    heuristic_option  = 1
+    mission_planner = simulation_data.init_simulation(simulation_option,
+                                                      heuristic_option)
 
     while True:
         display_main_menu(verbose)
@@ -208,7 +210,7 @@ def main(verbose) -> None:
             case 0:
                 break
             case 1:
-                mission_planner, heuristic_option, simulation_option = \
+                mission_planner, simulation_option = \
                     change_simulation_menu(mission_planner, heuristic_option, simulation_option)
             case 2:
                 view_graph_menu(mission_planner.graph)
@@ -222,7 +224,10 @@ def main(verbose) -> None:
                 print("\nSupplies:")
                 print(json.dumps(mission_planner.serialize_supplies(), indent=2))
             case 4:
-                search_menu(mission_planner, heuristic_option, verbose)
+                heuristic_option = search_menu(mission_planner,
+                                               simulation_option,
+                                               heuristic_option,
+                                               verbose)
             case 9:
                 verbose = not verbose
                 print("Verbose mode " + ("enabled" if verbose else "disabled"))

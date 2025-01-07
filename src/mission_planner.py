@@ -16,10 +16,10 @@ from algorithms  import (
     greedy,
     astar
 )
+import simulation_data
 
 from operation import operation_order
 
-import copy
 import json
 
 
@@ -30,7 +30,6 @@ class MissionPlanner:
         self.catastrophes = catastrophes
         self.fleet = fleet
         self.supplies = supplies
-        self.backup = self.backup()
 
     def __str__(self):
         return (
@@ -55,18 +54,6 @@ class MissionPlanner:
 
     def __hash__(self):
         return hash((self.graph, self.catastrophes, self.fleet, self.supplies))
-
-    ###
-    # Object backup and restore methods
-    ###
-    def backup(self):
-        return copy.deepcopy(self)
-
-    def restore(self):
-        self.graph = self.backup.graph
-        self.catastrophes = self.backup.catastrophes
-        self.fleet = self.backup.fleet
-        self.supplies = self.backup.supplies
 
     ###
     # Serialize methods for pretty printing
@@ -200,7 +187,11 @@ class MissionPlanner:
 
         return vehicles_operations
 
-    def planner(self, verbose: bool, algorithm: str):
+    def planner(self,
+                simulation_option: int,
+                heuristic_option: int,
+                algorithm: str,
+                verbose: bool):
 
         # Get the search algorithm
         try:
@@ -340,7 +331,9 @@ class MissionPlanner:
                     print(operation)
 
         # Restore mission planner state after running the planner/simulator
-        self.restore()
+        mission_planner = \
+            simulation_data.init_simulation(simulation_option, heuristic_option)
+        self.__dict__.update(mission_planner.__dict__)
 
     def execute(self, operation: Operation):
         # Get the vehicle from the fleet

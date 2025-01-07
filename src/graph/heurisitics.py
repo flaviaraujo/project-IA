@@ -40,7 +40,7 @@ def heuristic_fn1(params: dict) -> None:
         graph.h[node.name] = heuristic_value
 
 
-# Medium heuristic: 
+# Medium heuristic:
 # For each vehicle: distance + time_arrival_vehicle - time_response_catastrophe + fuel
 def heuristic_fn2(params: dict) -> None:
     # Get the parameters
