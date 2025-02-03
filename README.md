@@ -23,5 +23,5 @@ Este projeto implementa uma solução baseada em Inteligência Artificial para o
 - [Miguel Barbosa](https://github.com/migukau)
 - [Miguel Carvalho](https://github.com/migueltc13)
 
-### Classificação: 18
+### Classificação: 17
 
