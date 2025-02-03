@@ -1,7 +1,6 @@
 # Otimização de Distribuição Alimentar numa Catástrofe
 
-Este projeto implementa uma solução baseada em Inteligência Artificial para otimizar a distribuição de suprimentos em situações de emergência. 
-Este projeto usa algoritmos de procura para otimizar a logística de distribuição, considerando fatores como:
+Este projeto implementa uma solução baseada em Inteligência Artificial para otimizar a distribuição de suprimentos em situações de emergência, utilizando algoritmos de procura para otimizar a logística de distribuição, considerando fatores como:
 - Perecibilidade dos suprimentos
 - Capacidade e consumo dos veículos
 - Tempo de resposta e acessibilidade
@@ -23,4 +22,6 @@ Este projeto usa algoritmos de procura para otimizar a logística de distribuiç
 - [Joshua Moreira](https://github.com/CheirosoOficial)
 - [Miguel Barbosa](https://github.com/migukau)
 - [Miguel Carvalho](https://github.com/migueltc13)
+
+### Classificação: 18
 
