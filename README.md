@@ -1,4 +1,4 @@
-# Otimização de Distribuição Alimentar numa Catástrofe
+# Otimização de Distribuição Alimentar em Catástrofes
 
 Este projeto implementa uma solução baseada em Inteligência Artificial para otimizar a distribuição de suprimentos em situações de emergência, utilizando algoritmos de procura para otimizar a logística de distribuição, considerando fatores como:
 - Perecibilidade dos suprimentos
